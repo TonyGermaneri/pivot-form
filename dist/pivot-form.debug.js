@@ -596,7 +596,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false*/
+/*globals define: false, requestAnimationFrame: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ../util.js */ 0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
     'use strict';
     var components = {}, ce = util.createElement, sp = util.setProperties;
@@ -710,6 +710,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         };
         function changeEvent() {
             // break circular refs
+            if (!data) { return; }
             data[header.name] = JSON.parse(JSON.stringify(grid.data));
             component.dispatchEvent('change', {data: data});
         }
@@ -775,11 +776,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             component.containerStyle = {
                 width: '100%'
             };
-            activeTabItem.resize();
             component.appendChild(activeTabItem.content);
+            activeTabItem.resize();
         }
         Object.keys(header.tabs).forEach(function (tabName) {
             var tabItem = header.tabs[tabName];
+            tabItem.components = [];
             tabItem.tab = ce('div', tabs, {
                 className: 'tab',
                 events: {
@@ -793,16 +795,21 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             tabItem.content = ce('div', null, { className: 'tab-content' });
             tabItem.forEach(function (header, index) {
                 var t = components[header.type] || components.string,
-                    component = t.apply(componentContext, [header, index, data, intf]);
-                tabItem.resize = function () {
-                    if (component.resize) { requestAnimationFrame(component.resize); }
-                };
-                component.addEventListener('change', function () {
+                    subComponent = t.apply(componentContext, [header, index, data, intf]);
+                subComponent.addEventListener('change', function () {
                     intf.dispatchEvent('change', {data: data});
                 });
-                tabComponents.push(component);
-                tabItem.content.appendChild(component);
+                tabComponents.push(subComponent);
+                tabItem.components.push(subComponent);
+                tabItem.content.appendChild(subComponent);
             });
+            tabItem.resize = function () {
+                tabItem.components.forEach(function (subComponent) {
+                    if (subComponent.resize) {
+                        requestAnimationFrame(subComponent.resize);
+                    }
+                });
+            };
         });
         util.addEventInterface(component, header, index, data, intf);
         Object.keys(header.tabs).forEach(function (tabName, index) {
