@@ -15,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         name: 'pivot-form-a',
                         schema: [
                             {
-                                name: 'col25',
+                                name: 'col1',
                                 type: 'date'
                             },
                             {
-                                name: 'col26'
+                                name: 'col2'
                             },
                             {
-                                name: 'col27'
+                                name: 'col3'
                             }
                         ]
                     }
@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Grid': [
                     {
                         type: 'canvas-datagrid',
-                        data: [{col1: 'a'}],
                         style: {
                             height: '150px'
                         },
@@ -94,7 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
     p.data = {
         col1: 'blah1',
         col2: 'blah2',
-        col3: 'blah'
+        col3: 'blah',
+        col57: '235',
+        col49: [{foo: '235'}]
     };
     document.body.appendChild(p);
+    p.addEventListener('change', function () {
+        document.getElementById('data-sample').value = JSON.stringify(p.data);
+    });
 });
