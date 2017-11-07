@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+// this program only produces the <data> part, the rest you type by hand
+// a base 64 url
+// data:[<mediatype>][;base64],<data>
+// e.g.: data:text/plain;base64,dmFyIGZzID0gcmVxdWlyZSgnZnMnKTsKZnMucmVhZEZpbGUocHJvY2Vzcy5hcmd2WzJdLCBmdW5jdGlvbiAoZXJyLCBkYXRhKSB7CiAgICAndXNlIHN0cmljdCc7CiAgICBpZiAoZXJyKSB7CiAgICAgICAgY29uc29sZS5sb2coZXJyKTsKICAgICAgICBwcm9jZXNzLmV4aXQoMSk7CiAgICB9CiAgICBwcm9jZXNzLnN0ZG91dC53cml0ZShkYXRhLnRvU3RyaW5nKCdiYXNlNjQnKSk7CiAgICBwcm9jZXNzLmV4aXQoMCk7Cn0pOw==
+var fs = require('fs');
+fs.readFile(process.argv[2], function (err, data) {
+    'use strict';
+    if (err) {
+        console.log(err);
+        process.exit(1);
+    }
+    process.stdout.write(data.toString('base64'));
+    process.exit(0);
+});

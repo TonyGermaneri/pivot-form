@@ -1,0 +1,32 @@
+{
+  "name": "pivot-form",
+  "version": "0.0.1",
+  "description": "Schema based hierarchical form component.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha",
+    "build-watch": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd --watch -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map'",
+    "build-debug": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map';cat ./dist/pivot-form.debug.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.debug.js;",
+    "build": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.js --devtool source-map --output-source-map-filename='pivot-form.map';cat ./dist/pivot-form.debug.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.debug.js;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TonyGermaneri/pivot-form.git"
+  },
+  "keywords": [
+    "web component",
+    "form",
+    "hierarchial form",
+    "validation",
+    "granular access"
+  ],
+  "author": "Tony Germaneri",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/TonyGermaneri/pivot-form/issues"
+  },
+  "homepage": "https://github.com/TonyGermaneri/pivot-form",
+  "devDependencies": {
+    "webpack": "^3.0.0"
+  }
+}
