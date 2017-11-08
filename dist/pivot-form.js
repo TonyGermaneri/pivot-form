@@ -101,6 +101,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 });
             };
             component.dispatchEvent = function (ev, e) {
+                e = e || {};
                 var defaultPrevented;
                 function preventDefault() {
                     defaultPrevented = true;
@@ -189,7 +190,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false, performance: false*/
+/*globals define: false, performance: false, requestAnimationFrame: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ./components/index.js */ 2), __webpack_require__(/*! ./util.js */ 0), __webpack_require__(/*! ./dialog.js */ 3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (defaultComponents, util, dialog) {
     'use strict';
     var ce = util.createElement,
@@ -398,6 +399,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             createDom();
             initData();
         }
+        function dispatchResize() {
+            self.intf.dispatchEvent('resize');
+            requestAnimationFrame(function () {
+                window.dispatchEvent(new Event('resize'));
+            });
+        }
         function init() {
             if (!self.initialized) {
                 self.initialized = true;
@@ -407,7 +414,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 if (!self.cssAttached) {
                     ce('link', self.shadowRoot, {
                         rel: 'stylesheet',
-                        href: /^file:\/\/\//.test(window.location) ? '../lib/index.css' : 'data:text/css;base64,cssurl-target'
+                        href: /^file:\/\/\//.test(window.location) ? '../lib/index.css' : 'data:text/css;base64,Lm5vc2VsZWN0LCAudGFicywgLmRpYWxvZy10aXRsZS1iYXIgewogICAgLXdlYmtpdC10b3VjaC1jYWxsb3V0OiBub25lOwogICAgLXdlYmtpdC11c2VyLXNlbGVjdDogbm9uZTsKICAgIC1raHRtbC11c2VyLXNlbGVjdDogbm9uZTsKICAgIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7CiAgICAtbXMtdXNlci1zZWxlY3Q6IG5vbmU7CiAgICB1c2VyLXNlbGVjdDogbm9uZTsKfQouY29tcG9uZW50IHsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWNvbXBvbmVudC13aWR0aCwgMTAwJSk7Cn0KLmxhYmVsIHsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWxhYmVsLXdpZHRoLCAxMDBweCk7CiAgICBkaXNwbGF5OiB2YXIoLS1waXZvdC1mb3JtLWxhYmVsLWRpc3BsYXksIGlubGluZS1ibG9jayk7CiAgICBmb250LWZhbWlseTogdmFyKC0tcGl2b3QtZm9ybS1sYWJlbC1mb250LWZhbWlseSwgc2Fucy1zZXJpZik7Cn0KLnRhYmJlZC1jb21wb25lbnQgewogICAgd2hpdGUtc3BhY2U6IG5vd3JhcDsKICAgIHdpZHRoOiAxMDAlOwp9Ci50YWJzIHsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tdGFiLWNvbXBvbmVudC1kaXNwbGF5LCBpbmxpbmUtZmxleCk7CiAgICBmbGV4LWRpcmVjdGlvbjogdmFyKC0tcGl2b3QtZm9ybS10YWItY29tcG9uZW50LWZsZXgtZGlyZWN0aW9uLCByb3cpOwogICAgZmxleC13cmFwOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1jb21wb25lbnQtZmxleC13cmFwLCB3cmFwLXJldmVyc2UpOwogICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXRvcC1sZWZ0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci1sZWZ0LXN0eWxlOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItc3R5bGUsIHNvbGlkKTsKICAgIGJvcmRlci1sZWZ0LXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItd2lkdGgsIDFweCk7CiAgICBib3JkZXItbGVmdC1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIGJvcmRlci1ib3R0b20tc3R5bGU6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLWJvdHRvbS13aWR0aDogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXdpZHRoLCAxcHgpOwogICAgYm9yZGVyLWJvdHRvbS1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIHdpZHRoOiBjYWxjKDEwMCUgLSAxcHgpOwp9Ci50YWIgewogICAgcGFkZGluZy10b3A6IHZhcigtLXBpdm90LWZvcm0tdGFiLXBhZGRpbmctdG9wLCA0cHgpOwogICAgcGFkZGluZy1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1wYWRkaW5nLWxlZnQsIDRweCk7CiAgICBwYWRkaW5nLWJvdHRvbTogdmFyKC0tcGl2b3QtZm9ybS10YWItcGFkZGluZy1ib3R0b20sIDRweCk7CiAgICBwYWRkaW5nLXJpZ2h0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1wYWRkaW5nLXJpZ2h0LCA0cHgpOwogICAgY29sb3I6IHZhcigtLXBpdm90LWZvcm0tdGFiLWNvbG9yLCAjMzMzKTsKICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJhY2tncm91bmQtY29sb3IsICNFRUUpOwogICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXRvcC1sZWZ0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItdG9wLXJpZ2h0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIGJvcmRlci1zdHlsZTogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXN0eWxlLCBzb2xpZCk7CiAgICBib3JkZXItd2lkdGg6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci13aWR0aCwgMXB4KTsKICAgIGJvcmRlci1ib3R0b206IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1ib3R0b20sIG5vbmUpOwogICAgYm9yZGVyLWxlZnQ6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1sZWZ0LCBub25lKTsKICAgIGZvbnQtc2l6ZTogdmFyKC0tcGl2b3QtZm9ybS10YWItZm9udC1zaXplLCAxNHB4KTsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tdGFiLWRpc3BsYXksIGlubGluZS1ibG9jayk7CiAgICBjdXJzb3I6IHZhcigtLXBpdm90LWZvcm0tdGFiLWN1cnNvciwgcG9pbnRlcik7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1tYXJnaW4tYm90dG9tLCAwKTsKICAgIG1hcmdpbi1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1tYXJnaW4tbGVmdCwgMCk7CiAgICBmb250LWZhbWlseTogdmFyKC0tcGl2b3QtZm9ybS10YWItZm9udC1mYW1pbHksIHNhbnMtc2VyaWYpOwogICAgYm94LXNoYWRvdzogaW5zZXQgMCAtMnB4IDJweCB2YXIoLS1waXZvdC1mb3JtLXRhYi1pbmFjdGl2ZS1ib3gtc2hhZG93LWNvbG9yLCAjREREKTsKfQoudGFiLWFjdGl2ZSB7CiAgICBib3JkZXItY29sb3I6IHZhcigtLXBpdm90LWZvcm0tdGFiLWFjdGl2ZS1ib3JkZXItY29sb3IsICNBQUEpOwogICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYWN0aXZlLWJhY2tncm91bmQtY29sb3IsICNGRUZFRkUpOwogICAgbWFyZ2luLWJvdHRvbTogdmFyKC0tcGl2b3QtZm9ybS10YWItYWN0aXZlLW1hcmdpbi1ib3R0b20sIC0xcHgpOwogICAgYm94LXNoYWRvdzogaW5zZXQgMCAtM3B4IDNweCB0cmFuc3BhcmVudDsKfQoudGFiLWNvbnRlbnQgewogICAgbWFyZ2luLWJvdHRvbTogdmFyKC0tcGl2b3QtZm9ybS1jb250ZW50LW1hcmdpbi1ib3R0b20sIDVweCk7CiAgICBwYWRkaW5nOiB2YXIoLS1waXZvdC1mb3JtLWNvbnRlbnQtcGFkZGluZywgN3B4KTsKICAgIGJvcmRlci1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS1jb250ZW50LWJvcmRlci1jb2xvciwgIzk5OSk7CiAgICBib3JkZXItc3R5bGU6IHZhcigtLXBpdm90LWZvcm0tY29udGVudC1ib3JkZXItc3R5bGUsIHNvbGlkKTsKICAgIGJvcmRlci13aWR0aDogdmFyKC0tcGl2b3QtZm9ybS1jb250ZW50LWJvcmRlci13aWR0aCwgMXB4KTsKICAgIGJvcmRlci10b3A6IG5vbmU7Cn0KLnRhYi1jb250ZW50LWluYWN0aXZlIHsKICAgIGRpc3BsYXk6IG5vbmU7Cn0KLnRhYi1jb250ZW50LWFjdGl2ZSB7CiAgICBkaXNwbGF5OiBibG9jazsKfQouaXRlbS1oYW5kbGUsIC5yZW9yZGVyLW1hcmtlciB7CiAgICBjdXJzb3I6IG1vdmU7CiAgICB3aWR0aDogOHB4OwogICAgbWluLXdpZHRoOiA4cHg7CiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7CiAgICBmbG9hdDogbGVmdDsKICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgIG1hcmdpbi1sZWZ0OiA1cHg7CiAgICBtYXJnaW4tcmlnaHQ6IDVweDsKICAgIG1hcmdpbi1ib3R0b206IDVweDsKICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgIGNvbG9yOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1jb2xvciwgIzMzMyk7CiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1iYWNrZ3JvdW5kLWNvbG9yLCAjRUVFKTsKICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1yYWRpdXMsIDRweCk7CiAgICBib3JkZXItY29sb3I6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1jb2xvciwgI0NDQyk7CiAgICBib3JkZXItc3R5bGU6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1ib3JkZXItd2lkdGgsIDFweCk7Cn0KLnJlb3JkZXItbWFya2VyOmJlZm9yZSwgLml0ZW0taGFuZGxlOmJlZm9yZSB7CiAgICBjb250ZW50OiB2YXIoLS1waXZvdC1mb3JtLXJlb3JkZXItbWFya2VyLWNvbnRlbnQsICdcMDAyMDVFJyk7Cn0KLmlucHV0IHsKICAgIHBhZGRpbmctdG9wOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctdG9wLCAycHgpOwogICAgcGFkZGluZy1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctbGVmdCwgNHB4KTsKICAgIHBhZGRpbmctYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctYm90dG9tLCAycHgpOwogICAgcGFkZGluZy1yaWdodDogdmFyKC0tcGl2b3QtZm9ybS1pbnB1dC1wYWRkaW5nLXJpZ2h0LCAzcHgpOwogICAgbWFyZ2luLXRvcDogdmFyKC0tcGl2b3QtZm9ybS1pbnB1dC1tYXJnaW4tdG9wLCAycHgpOwogICAgbWFyZ2luLWxlZnQ6IHZhcigtLXBpdm90LWZvcm0taW5wdXQtbWFyZ2luLWxlZnQsIDFweCk7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LW1hcmdpbi1ib3R0b20sIDJweCk7CiAgICBtYXJnaW4tcmlnaHQ6IHZhcigtLXBpdm90LWZvcm0taW5wdXQtbWFyZ2luLXJpZ2h0LCAxcHgpOwogICAgZm9udC1zaXplOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LWZvbnQtc2l6ZSwgMTJweCk7Cn0KLmNvbXBvbmVudC1pdGVtIHsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tY29tcG9uZW50LCBpbmxpbmUtZmxleCk7Cn0KLnJlb3JkZXItZHJhZy1vdmVyIC5pdGVtLWhhbmRsZTpudGgtY2hpbGQoMSkgewogICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS1oYW5kbGUtZHJhZy1iYWNrZ3JvdW5kLWNvbG9yLCByZ2JhKDExMCwgMTY4LCAyNTUsIDEpKTsKfQoucmVvcmRlci1tYXJrZXIgewogICAgY29sb3I6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLXJlb3JkZXJpbmctbWFya2VyLWNvbG9yLCAjMzMzKTsKICAgIGJhY2tncm91bmQ6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLXJlb3JkZXJpbmctbWFya2VyLWNvbG9yLCAjRUVFKTsKICAgIGhlaWdodDogdmFyKC0tcGl2b3QtZm9ybS1oYW5kbGUtcmVvcmRlcmluZy1tYXJrZXItaGVpZ2h0LCAyM3B4KTsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1yZW9yZGVyaW5nLW1hcmtlci13aWR0aCwgMTBweCk7CiAgICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgICB6LWluZGV4OiAxMDsKfQoucGl2b3QtZm9ybSB7CiAgICBkaXNwbGF5OiB2YXIoLS1waXZvdC1mb3JtLWRpc3BsYXksIGZsZXgpOwogICAgZmxleC1kaXJlY3Rpb246IHZhcigtLXBpdm90LWZvcm0tZmxleC1kaXJlY3Rpb24sIHJvdyk7CiAgICBmbGV4LXdyYXA6IHZhcigtLXBpdm90LWZvcm0tZmxleC13cmFwLCB3cmFwKTsKfQouY2FudmFzLWRhdGFncmlkLWNoaWxkIHsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWNhbnZhcy1kYXRhZ3JpZC13aWR0aCwgMTAwJSk7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWNhbnZhcy1kYXRhZ3JpZC1tYXJnaW4tYm90dG9tLCA1cHgpOwp9Ci5kaWFsb2cgewogICAgd2lkdGg6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLXdpZHRoLCA1MDBweCk7CiAgICBib3JkZXItY29sb3I6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWJvcmRlci1jb2xvciwgIzAwMCk7CiAgICBib3JkZXItc3R5bGU6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1ib3JkZXItd2lkdGgsIDFweCk7CiAgICBwb3NpdGlvbjogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctcG9zaXRpb24sIGFic29sdXRlKTsKICAgIG92ZXJmbG93OiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1vdmVyZmxvdywgaGlkZGVuKTsKICAgIHotaW5kZXg6IDI7Cn0KLmRpYWxvZy1jb250ZW50IHsKICAgIHBhZGRpbmc6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWNvbnRlbnQtYmFja2dyb3VuZC1wYWRkaW5nLCA1cHgpOwogICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udGVudC1iYWNrZ3JvdW5kLWNvbG9yLCAjRkZGKTsKfQouZGlhbG9nLXRpdGxlIHsKICAgIGZsb2F0OiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy10aXRsZS1mbG9hdCwgbGVmdCk7CiAgICBmb250LXNpemU6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLXRpdGxlLWZvbnQtc2l6ZSwgMjBweCk7CiAgICBtYXJnaW4tbGVmdDogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctdGl0bGUtbWFyZ2luLWxlZnQsIDdweCk7CiAgICBtYXJnaW4tdG9wOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy10aXRsZS1tYXJnaW4tdG9wLCAzcHgpOwogICAgZm9udC1mYW1pbHk6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLXRpdGxlLWZvbnQtZmFtaWx5LCBzYW5zLXNlcmlmKTsKICAgIGN1cnNvcjogZGVmYXVsdDsKfQouZGlhbG9nLXRpdGxlLWJhciB7CiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy10aXRsZS1iYWNrZ3JvdW5kLWNvbG9yLCAjREREKTsKICAgIHRleHQtYWxpZ246IHJpZ2h0OwogICAgaGVpZ2h0OiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy10aXRsZS1iYXItaGVpZ2h0LCAyN3B4KTsKfQouZGlhbG9nLW1pbmltaXplLCAuZGlhbG9nLXJlc3RvcmUsIC5kaWFsb2ctbWF4aW1pemUsIC5kaWFsb2ctY2xvc2UgewogICAgZGlzcGxheTogaW5saW5lLWJsb2NrOwogICAgYmFja2dyb3VuZC1zaXplOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1jb250cm9sLWJveC1iYWNrZ3JvdW5kLXNpemUsIDI3cHgpOwogICAgYmFja2dyb3VuZC1yZXBlYXQ6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWNvbnRyb2wtYm94LWJhY2tncm91bmQtcmVwZWF0LCBuby1yZXBlYXQpOwogICAgd2lkdGg6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWNvbnRyb2wtYm94LXdpZHRoLCAyN3B4KTsKICAgIGhlaWdodDogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udHJvbC1ib3gtd2lkdGgsIDE4cHgpOwogICAgbWFyZ2luOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1jb250cm9sLWJveC1tYXJnaW4sIDNweCk7CiAgICBjdXJzb3I6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLWNvbnRyb2wtYm94LWN1cnNvciwgcG9pbnRlcik7Cn0KLmRpYWxvZy1taW5pbWl6ZSB7CiAgICBiYWNrZ3JvdW5kLWltYWdlOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1jb250cm9sLWJveC1taW5pbWl6ZS1iYWNrZ3JvdW5kLWltYWdlLCB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUC8vLzNkM2R5SDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSWhqSStweSswUG81eTAyb3V6M3J6N0Q0WVlRSlpsWjZab2VvcnVDOGZ5VEU4RkFEcz0pKTsKfQouZGlhbG9nLXJlc3RvcmUgewogICAgYmFja2dyb3VuZC1pbWFnZTogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udHJvbC1ib3gtcmVzdG9yZS1iYWNrZ3JvdW5kLWltYWdlLCB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUEh4OFhaMmRpSDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSXZqSStweSswUG81eTAyb3V6QnJ3RG5YZ2RpSHdsS1hLR3VhVXJHcjRndTQ1elRNb0hQYnY1RHd3S2g4UWlxUUFBT3c9PSkpOwp9Ci5kaWFsb2ctbWF4aW1pemUgewogICAgYmFja2dyb3VuZC1pbWFnZTogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udHJvbC1ib3gtbWF4aW1pemUtYmFja2dyb3VuZC1pbWFnZSwgdXJsKGRhdGE6aW1hZ2UvZ2lmO2Jhc2U2NCxSMGxHT0RsaElnQVlBSUFBQVAvLy8zZDNkeUg1QkFBQUFBQUFMQUFBQUFBaUFCZ0FBQUl0akkrcHkrMFBvNXkwMm91ejNnMzQvM0VCU0lva2FDNUFxcXljbThDYWZOQ1lQWnFuSi9iK0R3d0toNW9DQURzPSkpOwp9Ci5kaWFsb2ctY2xvc2UgewogICAgYmFja2dyb3VuZC1pbWFnZTogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udHJvbC1ib3gtY2xvc2UtYmFja2dyb3VuZC1pbWFnZSwgdXJsKGRhdGE6aW1hZ2UvZ2lmO2Jhc2U2NCxSMGxHT0RsaElnQVlBSUFBQVBIeDhYZDNkeUg1QkFBQUFBQUFMQUFBQUFBaUFCZ0FBQUlwakkrcHkrMFBvNXkwMm91ejN2d0M5WFZCYUpCaWFJcGpxZ0pzaDZvbDhtSnNMZWY2enZlK1dBQUFPdz09KSk7Cn0KLmRpYWxvZy1tb2RhbCB7CiAgICBoZWlnaHQ6IDEwMCU7CiAgICB3aWR0aDogMTAwJTsKICAgIHBvc2l0aW9uOiBmaXhlZDsKICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXBpdm90LWZvcm0tZGlhbG9nLW1vZGFsLWJhY2tncm91bmQtY29sb3IsIHJnYmEoMCwgMCwgMCwgMC4yNSkpOwogICAgei1pbmRleDogLTE7Cn0KLmRpYWxvZy1tYXhpbWl6ZWQgLmRpYWxvZy1tYXhpbWl6ZSB7CiAgICBiYWNrZ3JvdW5kLWltYWdlOiB2YXIoLS1waXZvdC1mb3JtLWRpYWxvZy1jb250cm9sLWJveC1yZXN0b3JlLWJhY2tncm91bmQtaW1hZ2UsIHVybChkYXRhOmltYWdlL2dpZjtiYXNlNjQsUjBsR09EbGhJZ0FZQUlBQUFQSHg4WFoyZGlINUJBQUFBQUFBTEFBQUFBQWlBQmdBQUFJdmpJK3B5KzBQbzV5MDJvdXpCcndEblhnZGlId2xLWEtHdWFVckdyNGd1NDV6VE1vSFBidjVEd3dLaDhRaXFRQUFPdz09KSk7Cn0KLmRpYWxvZy1tYXhpbWl6ZWQgewogICAgaGVpZ2h0OiAxMDAlOwogICAgd2lkdGg6IDEwMCU7CiAgICBwb3NpdGlvbjogZml4ZWQ7CiAgICB0b3A6IDA7CiAgICBsZWZ0OiAwOwp9Ci5kaWFsb2ctbWluaW1pemVkIHsKICAgIHdpZHRoOiAyMDBweDsKICAgIGhlaWdodDogMjdweDsKICAgIHJpZ2h0OiAwOwp9Ci5kaWFsb2ctbWluaW1pemVkIC5kaWFsb2ctbWluaW1pemUgewogICAgYmFja2dyb3VuZC1pbWFnZTogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctY29udHJvbC1ib3gtcmVzdG9yZS1iYWNrZ3JvdW5kLWltYWdlLCB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUEh4OFhaMmRpSDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSXZqSStweSswUG81eTAyb3V6QnJ3RG5YZ2RpSHdsS1hLR3VhVXJHcjRndTQ1elRNb0hQYnY1RHd3S2g4UWlxUUFBT3c9PSkpOwp9Ci5kaWFsb2ctbWluaW1pemVkIC5kaWFsb2ctdGl0bGUgewogICAgZm9udC1zaXplOiAxN3B4Owp9Ci5kaWFsb2ctbWluaW1pemVkIC5kaWFsb2ctcmVzdG9yZSwKLmRpYWxvZy1taW5pbWl6ZWQgLmRpYWxvZy1jbG9zZSwKLmRpYWxvZy1taW5pbWl6ZWQgLmRpYWxvZy1jb250ZW50IHsKICAgIGRpc3BsYXk6IG5vbmU7Cn0KLmRpYWxvZy1jbG9zZWQgewogICAgZGlzcGxheTogbm9uZTsKfQo='
                     });
                     self.cssAttached = true;
                 }
@@ -416,8 +423,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     dialogOptions = self.intf.dialogOptions || {};
                     dialogOptions.title = self.intf.title;
                     self.intf.dialog = dialog(dialogOptions);
+                    self.intf.dialog.addEventListener('resized', dispatchResize);
                     self.intf.dialog.content.appendChild(self.form);
                     self.shadowRoot.appendChild(self.intf.dialog);
+                    self.intf.dialog.attached = true;
                 }
                 addComponents(defaultComponents);
                 addComponents(self.args.components);
@@ -500,10 +509,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.intf.dialog.title.innerHTML = self.title;
                     self.intf.dialog.content.appendChild(self.form);
                     self.intf.appendChild(self.intf.dialog);
+                    self.intf.dialog.attached = true;
                     requestAnimationFrame(function () {
                         self.intf.dialog.center();
                     });
                 } else {
+                    if (self.intf.dialog) {
+                        self.intf.dialog.attached = false;
+                    }
                     self.intf.appendChild(self.form);
                 }
             }
@@ -607,6 +620,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             var component = ce('div', null, {className: 'component'}),
                 label = ce('div', component, {className: 'label'}),
                 input = ce('input', component, inputOptions);
+            component.containerStyle = {};
             label.innerHTML = header.name;
             component.header = header;
             component.label = label;
@@ -624,6 +638,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     input.value = v === undefined ? '' : v;
                 }
             });
+            sp(input, header.style);
+            sp(label, header.labelStyle);
+            sp(component, header.componentStyle);
+            sp(component.containerStyle, header.containerStyle);
             util.asyncValueSetter(component);
             component.addEventListener = input.addEventListener;
             component.removeEventListener = input.removeEventListener;
@@ -644,10 +662,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             options = [];
         label.innerHTML = header.name;
         component.label = label;
+        component.containerStyle = {};
+        sp(input, header.style);
+        sp(label, header.labelStyle);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         if (header.enum) {
             header.enum.forEach(function (item) {
+                var option;
                 if (!Array.isArray(item)) { item = [item, item]; }
-                options.push(ce('option', input, {value: item[0], innerHTML: item[1]}));
+                option = ce('option', input, {value: item[0], innerHTML: item[1]});
+                sp(option, header.optionStyle);
+                options.push(option);
             });
         }
         input.onchange = function () {
@@ -672,8 +698,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var component = ce('div', null, {className: 'component'}),
             label = ce('div', component, {className: 'label'});
         label.innerHTML = header.name;
-        sp(label, header.titleStyle);
-        sp(component, header.titleContainerStyle);
+        component.containerStyle = {};
+        sp(label, header.style);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         Object.defineProperty(component, 'value', {
             get: function () {
                 var d = {};
@@ -697,14 +725,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var pContext = this,
             component = ce('div', null, {className: 'canvas-datagrid-child'}),
             grid = window.canvasDatagrid();
+        component.containerStyle = {};
         component.appendChild(grid);
         Object.keys(header).forEach(function (propertyKey) {
             grid[propertyKey] = header[propertyKey];
         });
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
-        component.containerStyle = {
-            width: '100%'
-        };
+        sp(grid, header.style);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         component.resize = function () {
             grid.resize(true);
         };
@@ -734,11 +763,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             f,
             name = pContext.name ? (pContext.name + '_pivot-form_' + index) : undefined;
         f = window.pivotForm();
+        f.containerStyle = {};
         f.className = 'pivot-form-child';
         f.name = name;
         f.schema = header.schema;
         f.data = data;
         f.addComponents(pContext.components);
+        sp(f.containerStyle, header.containerStyle);
+        sp(f, header.style);
         Object.defineProperty(f, 'value', {
             get: function () {
                 return f.data;
@@ -758,6 +790,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             tabs = ce('div', component, {className: 'tabs'}),
             activeTab,
             defaultTab = header.defaultTabIndex || 0;
+        component.containerStyle = {};
         function activateTab(activeTabName) {
             var activeTabItem = header.tabs[activeTabName];
             activeTab = activeTabName;
@@ -812,6 +845,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         });
         util.addEventInterface(component, header, index, data, intf);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         Object.keys(header.tabs).forEach(function (tabName, index) {
             if (defaultTab === index) { return; }
             requestAnimationFrame(function () { activateTab(tabName); });
@@ -849,7 +884,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false, performance: false*/
+/*globals define: false, performance: false, Event: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ./util.js */ 0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
     'use strict';
     var ce = util.createElement;
@@ -858,10 +893,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var self = {},
             intf = ce('div', null, {className: 'dialog'});
         self.intf = intf;
+        intf.minWidth = 300;
+        intf.minHeight = 27;
         // a rough area were bandit pixels hang out
         self.borderZone = 5;
+        intf.attached = false;
         function resizeMouseHover(ev) {
             if (self.moving) { return; }
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             self.borderResizeCursor = 'auto';
             self.borderResizeMode = undefined;
             var b = self.borderZone,
@@ -895,6 +935,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.style.cursor = self.borderResizeCursor;
         }
         function moveResizeDialog(e) {
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             var s = self.startMove,
                 r = self.borderResizeMode,
                 deltaY = (e.clientY -  s.clientY),
@@ -903,18 +945,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             if (r.n || r.s || r.e || r.w) {
                 if (r.n) {
                     intf.style.top = s.offsetTop + deltaY + 'px';
-                    intf.style.height = s.offsetHeight - deltaY + 'px';
+                    intf.style.height = Math.max(intf.minHeight, s.offsetHeight - deltaY) + 'px';
                 }
                 if (r.s) {
-                    intf.style.height = s.offsetHeight + deltaY + 'px';
+                    intf.style.height = Math.max(intf.minHeight, s.offsetHeight + deltaY) + 'px';
                 }
                 if (r.w) {
                     intf.style.left = s.offsetLeft + deltaX + 'px';
-                    intf.style.width = s.offsetWidth - deltaX + 'px';
+                    intf.style.width = Math.max(intf.minWidth, s.offsetWidth - deltaX) + 'px';
                 }
                 if (r.e) {
-                    intf.style.width = s.offsetWidth + deltaX + 'px';
+                    intf.style.width = Math.max(intf.minWidth, s.offsetWidth + deltaX) + 'px';
                 }
+                window.dispatchEvent(new Event('resize'));
             } else if (r.m) {
                 intf.style.top = s.offsetTop + deltaY + 'px';
                 intf.style.left = s.offsetLeft + deltaX + 'px';
@@ -924,9 +967,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function center(verticalAlso) {
             intf.style.left = (window.innerWidth / 2) - (self.intf.offsetWidth / 2) + 'px';
             if (verticalAlso) {
-                intf.style.top = (window.innerHeight / 2) - (self.intf.offsetHeight / 2) + 'px';
+                intf.style.top = document.scrollingElement.scrollTop + (window.innerHeight / 2) - (self.intf.offsetHeight / 2) + 'px';
             } else {
-                intf.style.top = '20px';
+                intf.style.top = document.scrollingElement.scrollTop + 20 + 'px';
             }
         }
         function endMove(e) {
@@ -936,6 +979,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.removeEventListener('mousemove', moveResizeDialog);
         }
         function beginDialogMove(e) {
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             self.moving = true;
             self.startMove = {
                 clientX: e.clientX,
@@ -948,18 +993,76 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.addEventListener('mouseup', endMove);
             document.addEventListener('mousemove', moveResizeDialog);
         }
+        function open() {
+            intf.classList.remove('dialog-closed');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function close() {
+            intf.classList.add('dialog-closed');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function restoreSavedSize() {
+            intf.style.top = self.restoreRect.top + 'px';
+            intf.style.left = self.restoreRect.left + 'px';
+            intf.style.height = self.restoreRect.height + 'px';
+            intf.style.width = self.restoreRect.width + 'px';
+        }
+        function minimize() {
+            self.minimized = !self.minimized;
+            if (self.minimized) {
+                self.restoreRect = intf.getBoundingClientRect();
+                intf.classList.add('dialog-minimized');
+                self.controlBoxMaximize.classList.add('dialog-restore');
+                window.dispatchEvent(new Event('resize'));
+                intf.style.top = '';
+                intf.style.left = '';
+                intf.style.width = '';
+                intf.style.height = '';
+                return;
+            }
+            restoreSavedSize();
+            intf.classList.remove('dialog-minimized');
+            self.controlBoxMaximize.classList.remove('dialog-restore');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function maximize() {
+            self.maximized = !self.maximized;
+            if (self.maximized) {
+                self.restoreRect = intf.getBoundingClientRect();
+                intf.classList.add('dialog-maximized');
+                self.controlBoxMaximize.classList.add('dialog-restore');
+                intf.style.top = '0px';
+                intf.style.left = '0px';
+                intf.style.width = window.innerWidth + 'px';
+                intf.style.height = window.innerHeight + 'px';
+                window.dispatchEvent(new Event('resize'));
+                return;
+            }
+            intf.classList.remove('dialog-maximized');
+            self.controlBoxMaximize.classList.remove('dialog-restore');
+            restoreSavedSize();
+            window.dispatchEvent(new Event('resize'));
+        }
         function init() {
-            self.modal = ce('div', intf, {className: 'dialog-modal'});
+            self.modal = ce('div', null, {className: 'dialog-modal'});
             self.titleBar = ce('div', intf, {className: 'dialog-title-bar'});
             self.title = ce('span', self.titleBar, {className: 'dialog-title', innerHTML: args.title || '' });
             self.content = ce('div', intf, {className: 'dialog-content'});
             self.card = ce('div', null, {className: 'dialog-card'});
-            self.controlBoxMinimize = ce('div', self.titleBar, {className: 'dialog-minimize'});
-            self.controlBoxMaximize = ce('div', self.titleBar, {className: 'dialog-maximize'});
+            self.controlBoxMinimize = ce('div', null, {className: 'dialog-minimize'});
+            self.controlBoxMaximize = ce('div', null, {className: 'dialog-maximize'});
             self.controlBoxClose = ce('div', self.titleBar, {className: 'dialog-close'});
             self.titleBar.addEventListener('mousedown', beginDialogMove);
+            window.addEventListener('resize', function () {
+                if (self.maximized) {
+                    intf.style.width = window.innerWidth + 'px';
+                    intf.style.height = window.innerHeight + 'px';
+                }
+            });
             intf.addEventListener('mousedown', beginDialogMove);
-            intf.addEventListener('mousemove', resizeMouseHover);
+            intf.addEventListener('mousemove', function (e) {
+                resizeMouseHover(e);
+            });
             // interface
             intf.content = self.content;
             intf.card = self.card;
@@ -973,6 +1076,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.controlBoxMaximize = self.controlBoxMaximize;
             intf.controlBoxClose = self.controlBoxClose;
             intf.center = center;
+            Object.defineProperty(intf, 'modal', {
+                get: function (value) {
+                    return self.modal;
+                },
+                set: function (value) {
+                    self.modal = !!value;
+                    if (self.modal) {
+                        document.body.appendChild(self.modal);
+                    } else {
+                        document.body.removeChild(self.modal);
+                    }
+                    window.dispatchEvent(new Event('resize'));
+                }
+            });
             Object.defineProperty(self.titleBar, 'value', {
                 get: function () {
                     return self.title.innerHTML;
@@ -982,6 +1099,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.title.innerHTML = value;
                 }
             });
+            intf.open = open;
+            intf.maximize = maximize;
+            intf.minimize = minimize;
+            intf.maximize = maximize;
+            self.titleBar.ondblclick = maximize;
+            self.controlBoxClose.onclick = close;
+            self.controlBoxMinimize.onclick = minimize;
+            self.controlBoxMaximize.onclick = maximize;
         }
         init();
         return intf;

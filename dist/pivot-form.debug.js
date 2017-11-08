@@ -101,6 +101,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 });
             };
             component.dispatchEvent = function (ev, e) {
+                e = e || {};
                 var defaultPrevented;
                 function preventDefault() {
                     defaultPrevented = true;
@@ -189,7 +190,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false, performance: false*/
+/*globals define: false, performance: false, requestAnimationFrame: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ./components/index.js */ 2), __webpack_require__(/*! ./util.js */ 0), __webpack_require__(/*! ./dialog.js */ 3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (defaultComponents, util, dialog) {
     'use strict';
     var ce = util.createElement,
@@ -398,6 +399,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             createDom();
             initData();
         }
+        function dispatchResize() {
+            self.intf.dispatchEvent('resize');
+            requestAnimationFrame(function () {
+                window.dispatchEvent(new Event('resize'));
+            });
+        }
         function init() {
             if (!self.initialized) {
                 self.initialized = true;
@@ -407,7 +414,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 if (!self.cssAttached) {
                     ce('link', self.shadowRoot, {
                         rel: 'stylesheet',
-                        href: /^file:\/\/\//.test(window.location) ? '../lib/index.css' : 'data:text/css;base64,Lm5vc2VsZWN0LCAudGFicywgLmRpYWxvZy10aXRsZS1iYXIgewogICAgLXdlYmtpdC10b3VjaC1jYWxsb3V0OiBub25lOwogICAgLXdlYmtpdC11c2VyLXNlbGVjdDogbm9uZTsKICAgIC1raHRtbC11c2VyLXNlbGVjdDogbm9uZTsKICAgIC1tb3otdXNlci1zZWxlY3Q6IG5vbmU7CiAgICAtbXMtdXNlci1zZWxlY3Q6IG5vbmU7CiAgICB1c2VyLXNlbGVjdDogbm9uZTsKfQouY29tcG9uZW50IHsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWNvbXBvbmVudC13aWR0aCwgMTAwJSk7Cn0KLmxhYmVsIHsKICAgIHdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWxhYmVsLXdpZHRoLCAxMDBweCk7CiAgICBkaXNwbGF5OiB2YXIoLS1waXZvdC1mb3JtLWxhYmVsLWRpc3BsYXksIGlubGluZS1ibG9jayk7CiAgICBmb250LWZhbWlseTogdmFyKC0tcGl2b3QtZm9ybS1sYWJlbC1mb250LWZhbWlseSwgc2Fucy1zZXJpZik7Cn0KLnRhYmJlZC1jb21wb25lbnQgewogICAgd2hpdGUtc3BhY2U6IG5vd3JhcDsKICAgIHdpZHRoOiAxMDAlOwp9Ci50YWJzIHsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tdGFiLWNvbXBvbmVudC1kaXNwbGF5LCBpbmxpbmUtZmxleCk7CiAgICBmbGV4LWRpcmVjdGlvbjogdmFyKC0tcGl2b3QtZm9ybS10YWItY29tcG9uZW50LWZsZXgtZGlyZWN0aW9uLCByb3cpOwogICAgZmxleC13cmFwOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1jb21wb25lbnQtZmxleC13cmFwLCB3cmFwLXJldmVyc2UpOwogICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXRvcC1sZWZ0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci1sZWZ0LXN0eWxlOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItc3R5bGUsIHNvbGlkKTsKICAgIGJvcmRlci1sZWZ0LXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItd2lkdGgsIDFweCk7CiAgICBib3JkZXItbGVmdC1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIGJvcmRlci1ib3R0b20tc3R5bGU6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLWJvdHRvbS13aWR0aDogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXdpZHRoLCAxcHgpOwogICAgYm9yZGVyLWJvdHRvbS1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIHdpZHRoOiBjYWxjKDEwMCUgLSAxcHgpOwp9Ci50YWIgewogICAgcGFkZGluZy10b3A6IHZhcigtLXBpdm90LWZvcm0tdGFiLXBhZGRpbmctdG9wLCA0cHgpOwogICAgcGFkZGluZy1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1wYWRkaW5nLWxlZnQsIDRweCk7CiAgICBwYWRkaW5nLWJvdHRvbTogdmFyKC0tcGl2b3QtZm9ybS10YWItcGFkZGluZy1ib3R0b20sIDRweCk7CiAgICBwYWRkaW5nLXJpZ2h0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1wYWRkaW5nLXJpZ2h0LCA0cHgpOwogICAgY29sb3I6IHZhcigtLXBpdm90LWZvcm0tdGFiLWNvbG9yLCAjMzMzKTsKICAgIGJhY2tncm91bmQ6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJhY2tncm91bmQsICNFRUUpOwogICAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXRvcC1sZWZ0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1ib3JkZXItdG9wLXJpZ2h0LXJhZGl1cywgNHB4KTsKICAgIGJvcmRlci1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIGJvcmRlci1zdHlsZTogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXN0eWxlLCBzb2xpZCk7CiAgICBib3JkZXItd2lkdGg6IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1zdHlsZSwgMXB4KTsKICAgIGJvcmRlci1ib3R0b206IHZhcigtLXBpdm90LWZvcm0tdGFiLWJvcmRlci1zdHlsZSwgbm9uZSk7CiAgICBib3JkZXItbGVmdDogdmFyKC0tcGl2b3QtZm9ybS10YWItYm9yZGVyLXN0eWxlLCBub25lKTsKICAgIGZvbnQtc2l6ZTogdmFyKC0tcGl2b3QtZm9ybS10YWItZm9udC1zaXplLCAxNHB4KTsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tdGFiLWRpc3BsYXksIGlubGluZS1ibG9jayk7CiAgICBjdXJzb3I6IHBvaW50ZXI7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1tYXJnaW4tYm90dG9tLCAwKTsKICAgIG1hcmdpbi1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1tYXJnaW4tYm90dG9tLCAwKTsKICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1waXZvdC1mb3JtLXRhYi1mb250LWZhbWlseSwgc2Fucy1zZXJpZik7CiAgICBib3gtc2hhZG93OiBpbnNldCAwIC0ycHggMnB4IHZhcigtLXBpdm90LWZvcm0tdGFiLWluYWN0aXZlLWJveC1zaGFkb3ctY29sb3IsICNEREQpOwp9Ci50YWItYWN0aXZlIHsKICAgIGJvcmRlci1jb2xvcjogdmFyKC0tcGl2b3QtZm9ybS10YWItYWN0aXZlLWJvcmRlci1jb2xvciwgI0FBQSk7CiAgICBiYWNrZ3JvdW5kOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1hY3RpdmUtYmFja2dyb3VuZCwgI0ZFRkVGRSk7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLXRhYi1hY3RpdmUtYmFja2dyb3VuZCwgLTFweCk7CiAgICBib3gtc2hhZG93OiBpbnNldCAwIC0zcHggM3B4IHRyYW5zcGFyZW50Owp9Ci50YWItY29udGVudCB7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWNvbnRlbnQtbWFyZ2luLWJvdHRvbSwgNXB4KTsKICAgIHBhZGRpbmc6IHZhcigtLXBpdm90LWZvcm0tY29udGVudC1wYWRkaW5nLCA3cHgpOwogICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1waXZvdC1mb3JtLWNvbnRlbnQtYm9yZGVyLWNvbG9yLCAjOTk5KTsKICAgIGJvcmRlci1zdHlsZTogdmFyKC0tcGl2b3QtZm9ybS1jb250ZW50LWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWNvbnRlbnQtYm9yZGVyLXN0eWxlLCAxcHgpOwogICAgYm9yZGVyLXRvcDogbm9uZTsKfQoudGFiLWNvbnRlbnQtaW5hY3RpdmUgewogICAgZGlzcGxheTogbm9uZTsKfQoudGFiLWNvbnRlbnQtYWN0aXZlIHsKICAgIGRpc3BsYXk6IGJsb2NrOwp9Ci5pdGVtLWhhbmRsZSwgLnJlb3JkZXItbWFya2VyIHsKICAgIGN1cnNvcjogbW92ZTsKICAgIHdpZHRoOiA4cHg7CiAgICBtaW4td2lkdGg6IDhweDsKICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsKICAgIGZsb2F0OiBsZWZ0OwogICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgbWFyZ2luLWxlZnQ6IDVweDsKICAgIG1hcmdpbi1yaWdodDogNXB4OwogICAgbWFyZ2luLWJvdHRvbTogNXB4OwogICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgY29sb3I6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWNvbG9yLCAjMzMzKTsKICAgIGJhY2tncm91bmQ6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWNvbG9yLCAjRUVFKTsKICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1yYWRpdXMsIDRweCk7CiAgICBib3JkZXItY29sb3I6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1jb2xvciwgI0NDQyk7CiAgICBib3JkZXItc3R5bGU6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWJvcmRlci1zdHlsZSwgc29saWQpOwogICAgYm9yZGVyLXdpZHRoOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1ib3JkZXItc3R5bGUsIDFweCk7Cn0KLnJlb3JkZXItbWFya2VyOmJlZm9yZSwgLml0ZW0taGFuZGxlOmJlZm9yZSB7CiAgICBjb250ZW50OiAnXDAwMjA1RSc7Cn0KLmlucHV0IHsKICAgIHBhZGRpbmctdG9wOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctdG9wLCAycHgpOwogICAgcGFkZGluZy1sZWZ0OiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctbGVmdCwgNHB4KTsKICAgIHBhZGRpbmctYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LXBhZGRpbmctYm90dG9tLCAycHgpOwogICAgcGFkZGluZy1yaWdodDogdmFyKC0tcGl2b3QtZm9ybS1pbnB1dC1wYWRkaW5nLXJpZ2h0LCAzcHgpOwogICAgbWFyZ2luLXRvcDogdmFyKC0tcGl2b3QtZm9ybS1pbnB1dC1tYXJnaW4tdG9wLCAycHgpOwogICAgbWFyZ2luLWxlZnQ6IHZhcigtLXBpdm90LWZvcm0taW5wdXQtbWFyZ2luLWxlZnQsIDFweCk7CiAgICBtYXJnaW4tYm90dG9tOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LW1hcmdpbi1ib3R0b20sIDJweCk7CiAgICBtYXJnaW4tcmlnaHQ6IHZhcigtLXBpdm90LWZvcm0taW5wdXQtbWFyZ2luLXJpZ2h0LCAxcHgpOwogICAgZm9udC1zaXplOiB2YXIoLS1waXZvdC1mb3JtLWlucHV0LWZvbnQtc2l6ZSwgMTJweCk7Cn0KLmNvbXBvbmVudC1pdGVtIHsKICAgIGRpc3BsYXk6IHZhcigtLXBpdm90LWZvcm0tZGlzcGxheSwgaW5saW5lLWZsZXgpOwp9Ci5yZW9yZGVyLWRyYWctb3ZlciAuaXRlbS1oYW5kbGU6bnRoLWNoaWxkKDEpIHsKICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXBpdm90LWZvcm0taGFuZGxlLWFjdGl2ZS1ib3JkZXItY29sb3IsIHJnYmEoMTEwLCAxNjgsIDI1NSwgMSkpOwp9Ci5yZW9yZGVyLW1hcmtlciB7CiAgICBjb2xvcjogdmFyKC0tcGl2b3QtZm9ybS1oYW5kbGUtcmVvcmRlcmluZy1jb2xvciwgIzMzMyk7CiAgICBiYWNrZ3JvdW5kOiB2YXIoLS1waXZvdC1mb3JtLWhhbmRsZS1yZW9yZGVyaW5nLWNvbG9yLCAjRUVFKTsKICAgIGhlaWdodDogMjNweDsKICAgIHdpZHRoOiAxMHB4OwogICAgcG9zaXRpb246IGFic29sdXRlOwogICAgei1pbmRleDogMTA7Cn0KLnBpdm90LWZvcm0gewogICAgZGlzcGxheTogdmFyKC0tcGl2b3QtZm9ybS1kaXNwbGF5LCBmbGV4KTsKICAgIGZsZXgtZGlyZWN0aW9uOiB2YXIoLS1waXZvdC1mb3JtLWZsZXgtZGlyZWN0aW9uLCByb3cpOwogICAgZmxleC13cmFwOiB2YXIoLS1waXZvdC1mb3JtLWZsZXgtd3JhcCwgd3JhcCk7Cn0KLmNhbnZhcy1kYXRhZ3JpZC1jaGlsZCB7CiAgICB3aWR0aDogMTAwJTsKICAgIG1hcmdpbi1ib3R0b206IDVweDsKfQouZGlhbG9nIHsKICAgIHdpZHRoOiA2OSU7CiAgICBib3JkZXI6IHNvbGlkIDFweCBncmVlbjsKICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTsKfQouZGlhbG9nLWNvbnRlbnQgewogICAgcGFkZGluZzogNXB4Owp9Ci5kaWFsb2ctdGl0bGUgewogICAgZmxvYXQ6IGxlZnQ7CiAgICBmb250LXNpemU6IDIwcHg7CiAgICBtYXJnaW4tbGVmdDogN3B4OwogICAgbWFyZ2luLXRvcDogM3B4OwogICAgZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7Cn0KLmRpYWxvZy10aXRsZS1iYXIgewogICAgYmFja2dyb3VuZDogdmFyKC0tcGl2b3QtZm9ybS1kaWFsb2ctdGl0bGUtYmFja2dyb3VuZCwgI0RERCk7CiAgICB0ZXh0LWFsaWduOiByaWdodDsKICAgIGhlaWdodDogMjdweDsKfQouZGlhbG9nLW1pbmltaXplLCAuZGlhbG9nLXJlc3RvcmUsIC5kaWFsb2ctbWF4aW1pemUsIC5kaWFsb2ctY2xvc2UgewogICAgZGlzcGxheTogaW5saW5lLWJsb2NrOwogICAgYmFja2dyb3VuZC1zaXplOiAyN3B4OwogICAgYmFja2dyb3VuZC1yZXBlYXQ6IG5vLXJlcGVhdDsKICAgIHdpZHRoOiAyN3B4OwogICAgaGVpZ2h0OiAxOHB4OwogICAgbWFyZ2luOiAzcHg7CiAgICBjdXJzb3I6IHBvaW50ZXI7Cn0KLmRpYWxvZy1taW5pbWl6ZSB7CiAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUC8vLzNkM2R5SDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSWhqSStweSswUG81eTAyb3V6M3J6N0Q0WVlRSlpsWjZab2VvcnVDOGZ5VEU4RkFEcz0pOwp9Ci5kaWFsb2ctcmVzdG9yZSB7CiAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUEh4OFhaMmRpSDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSXZqSStweSswUG81eTAyb3V6QnJ3RG5YZ2RpSHdsS1hLR3VhVXJHcjRndTQ1elRNb0hQYnY1RHd3S2g4UWlxUUFBT3c9PSk7Cn0KLmRpYWxvZy1tYXhpbWl6ZSB7CiAgICBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoZGF0YTppbWFnZS9naWY7YmFzZTY0LFIwbEdPRGxoSWdBWUFJQUFBUC8vLzNkM2R5SDVCQUFBQUFBQUxBQUFBQUFpQUJnQUFBSXRqSStweSswUG81eTAyb3V6M2czNC8zRUJTSW9rYUM1QXFxeWNtOENhZk5DWVBacW5KL2IrRHd3S2g1b0NBRHM9KTsKfQouZGlhbG9nLWNsb3NlIHsKICAgIGJhY2tncm91bmQtaW1hZ2U6IHVybChkYXRhOmltYWdlL2dpZjtiYXNlNjQsUjBsR09EbGhJZ0FZQUlBQUFQSHg4WGQzZHlINUJBQUFBQUFBTEFBQUFBQWlBQmdBQUFJcGpJK3B5KzBQbzV5MDJvdXozdndDOVhWQmFKQmlhSXBqcWdKc2g2b2w4bUpzTGVmNnp2ZStXQUFBT3c9PSk7Cn0K'
+                        href: /^file:\/\/\//.test(window.location) ? '../lib/index.css' : 'data:text/css;base64,cssurl-target'
                     });
                     self.cssAttached = true;
                 }
@@ -416,8 +423,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     dialogOptions = self.intf.dialogOptions || {};
                     dialogOptions.title = self.intf.title;
                     self.intf.dialog = dialog(dialogOptions);
+                    self.intf.dialog.addEventListener('resized', dispatchResize);
                     self.intf.dialog.content.appendChild(self.form);
                     self.shadowRoot.appendChild(self.intf.dialog);
+                    self.intf.dialog.attached = true;
                 }
                 addComponents(defaultComponents);
                 addComponents(self.args.components);
@@ -500,10 +509,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.intf.dialog.title.innerHTML = self.title;
                     self.intf.dialog.content.appendChild(self.form);
                     self.intf.appendChild(self.intf.dialog);
+                    self.intf.dialog.attached = true;
                     requestAnimationFrame(function () {
                         self.intf.dialog.center();
                     });
                 } else {
+                    if (self.intf.dialog) {
+                        self.intf.dialog.attached = false;
+                    }
                     self.intf.appendChild(self.form);
                 }
             }
@@ -607,6 +620,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             var component = ce('div', null, {className: 'component'}),
                 label = ce('div', component, {className: 'label'}),
                 input = ce('input', component, inputOptions);
+            component.containerStyle = {};
             label.innerHTML = header.name;
             component.header = header;
             component.label = label;
@@ -624,6 +638,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     input.value = v === undefined ? '' : v;
                 }
             });
+            sp(input, header.style);
+            sp(label, header.labelStyle);
+            sp(component, header.componentStyle);
+            sp(component.containerStyle, header.containerStyle);
             util.asyncValueSetter(component);
             component.addEventListener = input.addEventListener;
             component.removeEventListener = input.removeEventListener;
@@ -644,10 +662,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             options = [];
         label.innerHTML = header.name;
         component.label = label;
+        component.containerStyle = {};
+        sp(input, header.style);
+        sp(label, header.labelStyle);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         if (header.enum) {
             header.enum.forEach(function (item) {
+                var option;
                 if (!Array.isArray(item)) { item = [item, item]; }
-                options.push(ce('option', input, {value: item[0], innerHTML: item[1]}));
+                option = ce('option', input, {value: item[0], innerHTML: item[1]});
+                sp(option, header.optionStyle);
+                options.push(option);
             });
         }
         input.onchange = function () {
@@ -672,8 +698,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var component = ce('div', null, {className: 'component'}),
             label = ce('div', component, {className: 'label'});
         label.innerHTML = header.name;
-        sp(label, header.titleStyle);
-        sp(component, header.titleContainerStyle);
+        component.containerStyle = {};
+        sp(label, header.style);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         Object.defineProperty(component, 'value', {
             get: function () {
                 var d = {};
@@ -697,14 +725,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var pContext = this,
             component = ce('div', null, {className: 'canvas-datagrid-child'}),
             grid = window.canvasDatagrid();
+        component.containerStyle = {};
         component.appendChild(grid);
         Object.keys(header).forEach(function (propertyKey) {
             grid[propertyKey] = header[propertyKey];
         });
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
-        component.containerStyle = {
-            width: '100%'
-        };
+        sp(grid, header.style);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         component.resize = function () {
             grid.resize(true);
         };
@@ -734,11 +763,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             f,
             name = pContext.name ? (pContext.name + '_pivot-form_' + index) : undefined;
         f = window.pivotForm();
+        f.containerStyle = {};
         f.className = 'pivot-form-child';
         f.name = name;
         f.schema = header.schema;
         f.data = data;
         f.addComponents(pContext.components);
+        sp(f.containerStyle, header.containerStyle);
+        sp(f, header.style);
         Object.defineProperty(f, 'value', {
             get: function () {
                 return f.data;
@@ -758,6 +790,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             tabs = ce('div', component, {className: 'tabs'}),
             activeTab,
             defaultTab = header.defaultTabIndex || 0;
+        component.containerStyle = {};
         function activateTab(activeTabName) {
             var activeTabItem = header.tabs[activeTabName];
             activeTab = activeTabName;
@@ -812,6 +845,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         });
         util.addEventInterface(component, header, index, data, intf);
+        sp(component, header.componentStyle);
+        sp(component.containerStyle, header.containerStyle);
         Object.keys(header.tabs).forEach(function (tabName, index) {
             if (defaultTab === index) { return; }
             requestAnimationFrame(function () { activateTab(tabName); });
@@ -849,7 +884,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false, performance: false*/
+/*globals define: false, performance: false, Event: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ./util.js */ 0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
     'use strict';
     var ce = util.createElement;
@@ -858,10 +893,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var self = {},
             intf = ce('div', null, {className: 'dialog'});
         self.intf = intf;
+        intf.minWidth = 300;
+        intf.minHeight = 27;
         // a rough area were bandit pixels hang out
         self.borderZone = 5;
+        intf.attached = false;
         function resizeMouseHover(ev) {
             if (self.moving) { return; }
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             self.borderResizeCursor = 'auto';
             self.borderResizeMode = undefined;
             var b = self.borderZone,
@@ -895,6 +935,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.style.cursor = self.borderResizeCursor;
         }
         function moveResizeDialog(e) {
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             var s = self.startMove,
                 r = self.borderResizeMode,
                 deltaY = (e.clientY -  s.clientY),
@@ -903,18 +945,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             if (r.n || r.s || r.e || r.w) {
                 if (r.n) {
                     intf.style.top = s.offsetTop + deltaY + 'px';
-                    intf.style.height = s.offsetHeight - deltaY + 'px';
+                    intf.style.height = Math.max(intf.minHeight, s.offsetHeight - deltaY) + 'px';
                 }
                 if (r.s) {
-                    intf.style.height = s.offsetHeight + deltaY + 'px';
+                    intf.style.height = Math.max(intf.minHeight, s.offsetHeight + deltaY) + 'px';
                 }
                 if (r.w) {
                     intf.style.left = s.offsetLeft + deltaX + 'px';
-                    intf.style.width = s.offsetWidth - deltaX + 'px';
+                    intf.style.width = Math.max(intf.minWidth, s.offsetWidth - deltaX) + 'px';
                 }
                 if (r.e) {
-                    intf.style.width = s.offsetWidth + deltaX + 'px';
+                    intf.style.width = Math.max(intf.minWidth, s.offsetWidth + deltaX) + 'px';
                 }
+                window.dispatchEvent(new Event('resize'));
             } else if (r.m) {
                 intf.style.top = s.offsetTop + deltaY + 'px';
                 intf.style.left = s.offsetLeft + deltaX + 'px';
@@ -924,9 +967,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function center(verticalAlso) {
             intf.style.left = (window.innerWidth / 2) - (self.intf.offsetWidth / 2) + 'px';
             if (verticalAlso) {
-                intf.style.top = (window.innerHeight / 2) - (self.intf.offsetHeight / 2) + 'px';
+                intf.style.top = document.scrollingElement.scrollTop + (window.innerHeight / 2) - (self.intf.offsetHeight / 2) + 'px';
             } else {
-                intf.style.top = '20px';
+                intf.style.top = document.scrollingElement.scrollTop + 20 + 'px';
             }
         }
         function endMove(e) {
@@ -936,6 +979,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.removeEventListener('mousemove', moveResizeDialog);
         }
         function beginDialogMove(e) {
+            if (self.minimized) { return; }
+            if (self.maximized) { return; }
             self.moving = true;
             self.startMove = {
                 clientX: e.clientX,
@@ -948,18 +993,76 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.addEventListener('mouseup', endMove);
             document.addEventListener('mousemove', moveResizeDialog);
         }
+        function open() {
+            intf.classList.remove('dialog-closed');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function close() {
+            intf.classList.add('dialog-closed');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function restoreSavedSize() {
+            intf.style.top = self.restoreRect.top + 'px';
+            intf.style.left = self.restoreRect.left + 'px';
+            intf.style.height = self.restoreRect.height + 'px';
+            intf.style.width = self.restoreRect.width + 'px';
+        }
+        function minimize() {
+            self.minimized = !self.minimized;
+            if (self.minimized) {
+                self.restoreRect = intf.getBoundingClientRect();
+                intf.classList.add('dialog-minimized');
+                self.controlBoxMaximize.classList.add('dialog-restore');
+                window.dispatchEvent(new Event('resize'));
+                intf.style.top = '';
+                intf.style.left = '';
+                intf.style.width = '';
+                intf.style.height = '';
+                return;
+            }
+            restoreSavedSize();
+            intf.classList.remove('dialog-minimized');
+            self.controlBoxMaximize.classList.remove('dialog-restore');
+            window.dispatchEvent(new Event('resize'));
+        }
+        function maximize() {
+            self.maximized = !self.maximized;
+            if (self.maximized) {
+                self.restoreRect = intf.getBoundingClientRect();
+                intf.classList.add('dialog-maximized');
+                self.controlBoxMaximize.classList.add('dialog-restore');
+                intf.style.top = '0px';
+                intf.style.left = '0px';
+                intf.style.width = window.innerWidth + 'px';
+                intf.style.height = window.innerHeight + 'px';
+                window.dispatchEvent(new Event('resize'));
+                return;
+            }
+            intf.classList.remove('dialog-maximized');
+            self.controlBoxMaximize.classList.remove('dialog-restore');
+            restoreSavedSize();
+            window.dispatchEvent(new Event('resize'));
+        }
         function init() {
-            self.modal = ce('div', intf, {className: 'dialog-modal'});
+            self.modal = ce('div', null, {className: 'dialog-modal'});
             self.titleBar = ce('div', intf, {className: 'dialog-title-bar'});
             self.title = ce('span', self.titleBar, {className: 'dialog-title', innerHTML: args.title || '' });
             self.content = ce('div', intf, {className: 'dialog-content'});
             self.card = ce('div', null, {className: 'dialog-card'});
-            self.controlBoxMinimize = ce('div', self.titleBar, {className: 'dialog-minimize'});
-            self.controlBoxMaximize = ce('div', self.titleBar, {className: 'dialog-maximize'});
+            self.controlBoxMinimize = ce('div', null, {className: 'dialog-minimize'});
+            self.controlBoxMaximize = ce('div', null, {className: 'dialog-maximize'});
             self.controlBoxClose = ce('div', self.titleBar, {className: 'dialog-close'});
             self.titleBar.addEventListener('mousedown', beginDialogMove);
+            window.addEventListener('resize', function () {
+                if (self.maximized) {
+                    intf.style.width = window.innerWidth + 'px';
+                    intf.style.height = window.innerHeight + 'px';
+                }
+            });
             intf.addEventListener('mousedown', beginDialogMove);
-            intf.addEventListener('mousemove', resizeMouseHover);
+            intf.addEventListener('mousemove', function (e) {
+                resizeMouseHover(e);
+            });
             // interface
             intf.content = self.content;
             intf.card = self.card;
@@ -973,6 +1076,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.controlBoxMaximize = self.controlBoxMaximize;
             intf.controlBoxClose = self.controlBoxClose;
             intf.center = center;
+            Object.defineProperty(intf, 'modal', {
+                get: function (value) {
+                    return self.modal;
+                },
+                set: function (value) {
+                    self.modal = !!value;
+                    if (self.modal) {
+                        document.body.appendChild(self.modal);
+                    } else {
+                        document.body.removeChild(self.modal);
+                    }
+                    window.dispatchEvent(new Event('resize'));
+                }
+            });
             Object.defineProperty(self.titleBar, 'value', {
                 get: function () {
                     return self.title.innerHTML;
@@ -982,6 +1099,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.title.innerHTML = value;
                 }
             });
+            intf.open = open;
+            intf.maximize = maximize;
+            intf.minimize = minimize;
+            intf.maximize = maximize;
+            self.titleBar.ondblclick = maximize;
+            self.controlBoxClose.onclick = close;
+            self.controlBoxMinimize.onclick = minimize;
+            self.controlBoxMaximize.onclick = maximize;
         }
         init();
         return intf;

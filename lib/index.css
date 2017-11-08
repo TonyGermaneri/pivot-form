@@ -37,26 +37,26 @@
     padding-bottom: var(--pivot-form-tab-padding-bottom, 4px);
     padding-right: var(--pivot-form-tab-padding-right, 4px);
     color: var(--pivot-form-tab-color, #333);
-    background: var(--pivot-form-tab-background, #EEE);
+    background-color: var(--pivot-form-tab-background-color, #EEE);
     border-top-left-radius: var(--pivot-form-tab-border-top-left-radius, 4px);
     border-top-right-radius: var(--pivot-form-tab-border-top-right-radius, 4px);
     border-color: var(--pivot-form-tab-border-color, #999);
     border-style: var(--pivot-form-tab-border-style, solid);
-    border-width: var(--pivot-form-tab-border-style, 1px);
-    border-bottom: var(--pivot-form-tab-border-style, none);
-    border-left: var(--pivot-form-tab-border-style, none);
+    border-width: var(--pivot-form-tab-border-width, 1px);
+    border-bottom: var(--pivot-form-tab-border-bottom, none);
+    border-left: var(--pivot-form-tab-border-left, none);
     font-size: var(--pivot-form-tab-font-size, 14px);
     display: var(--pivot-form-tab-display, inline-block);
-    cursor: pointer;
+    cursor: var(--pivot-form-tab-cursor, pointer);
     margin-bottom: var(--pivot-form-tab-margin-bottom, 0);
-    margin-left: var(--pivot-form-tab-margin-bottom, 0);
+    margin-left: var(--pivot-form-tab-margin-left, 0);
     font-family: var(--pivot-form-tab-font-family, sans-serif);
     box-shadow: inset 0 -2px 2px var(--pivot-form-tab-inactive-box-shadow-color, #DDD);
 }
 .tab-active {
     border-color: var(--pivot-form-tab-active-border-color, #AAA);
-    background: var(--pivot-form-tab-active-background, #FEFEFE);
-    margin-bottom: var(--pivot-form-tab-active-background, -1px);
+    background-color: var(--pivot-form-tab-active-background-color, #FEFEFE);
+    margin-bottom: var(--pivot-form-tab-active-margin-bottom, -1px);
     box-shadow: inset 0 -3px 3px transparent;
 }
 .tab-content {
@@ -64,7 +64,7 @@
     padding: var(--pivot-form-content-padding, 7px);
     border-color: var(--pivot-form-content-border-color, #999);
     border-style: var(--pivot-form-content-border-style, solid);
-    border-width: var(--pivot-form-content-border-style, 1px);
+    border-width: var(--pivot-form-content-border-width, 1px);
     border-top: none;
 }
 .tab-content-inactive {
@@ -85,14 +85,14 @@
     margin-bottom: 5px;
     text-align: center;
     color: var(--pivot-form-handle-color, #333);
-    background: var(--pivot-form-handle-color, #EEE);
+    background-color: var(--pivot-form-handle-background-color, #EEE);
     border-radius: var(--pivot-form-handle-border-radius, 4px);
     border-color: var(--pivot-form-handle-border-color, #CCC);
     border-style: var(--pivot-form-handle-border-style, solid);
-    border-width: var(--pivot-form-handle-border-style, 1px);
+    border-width: var(--pivot-form-handle-border-width, 1px);
 }
 .reorder-marker:before, .item-handle:before {
-    content: '\00205E';
+    content: var(--pivot-form-reorder-marker-content, '\00205E');
 }
 .input {
     padding-top: var(--pivot-form-input-padding-top, 2px);
@@ -106,16 +106,16 @@
     font-size: var(--pivot-form-input-font-size, 12px);
 }
 .component-item {
-    display: var(--pivot-form-display, inline-flex);
+    display: var(--pivot-form-component, inline-flex);
 }
 .reorder-drag-over .item-handle:nth-child(1) {
-    background-color: var(--pivot-form-handle-active-border-color, rgba(110, 168, 255, 1));
+    background-color: var(--pivot-form-handle-drag-background-color, rgba(110, 168, 255, 1));
 }
 .reorder-marker {
-    color: var(--pivot-form-handle-reordering-color, #333);
-    background: var(--pivot-form-handle-reordering-color, #EEE);
-    height: 23px;
-    width: 10px;
+    color: var(--pivot-form-handle-reordering-marker-color, #333);
+    background: var(--pivot-form-handle-reordering-marker-color, #EEE);
+    height: var(--pivot-form-handle-reordering-marker-height, 23px);
+    width: var(--pivot-form-handle-reordering-marker-width, 10px);
     position: absolute;
     z-index: 10;
 }
@@ -125,47 +125,89 @@
     flex-wrap: var(--pivot-form-flex-wrap, wrap);
 }
 .canvas-datagrid-child {
-    width: 100%;
-    margin-bottom: 5px;
+    width: var(--pivot-form-canvas-datagrid-width, 100%);
+    margin-bottom: var(--pivot-form-canvas-datagrid-margin-bottom, 5px);
 }
 .dialog {
-    width: 69%;
-    border: solid 1px green;
-    position: absolute;
+    width: var(--pivot-form-dialog-width, 500px);
+    border-color: var(--pivot-form-dialog-border-color, #000);
+    border-style: var(--pivot-form-dialog-border-style, solid);
+    border-width: var(--pivot-form-dialog-border-width, 1px);
+    position: var(--pivot-form-dialog-position, absolute);
+    overflow: var(--pivot-form-dialog-overflow, hidden);
+    z-index: 2;
 }
 .dialog-content {
-    padding: 5px;
+    padding: var(--pivot-form-dialog-content-background-padding, 5px);
+    background-color: var(--pivot-form-dialog-content-background-color, #FFF);
 }
 .dialog-title {
-    float: left;
-    font-size: 20px;
-    margin-left: 7px;
-    margin-top: 3px;
-    font-family: sans-serif;
+    float: var(--pivot-form-dialog-title-float, left);
+    font-size: var(--pivot-form-dialog-title-font-size, 20px);
+    margin-left: var(--pivot-form-dialog-title-margin-left, 7px);
+    margin-top: var(--pivot-form-dialog-title-margin-top, 3px);
+    font-family: var(--pivot-form-dialog-title-font-family, sans-serif);
+    cursor: default;
 }
 .dialog-title-bar {
-    background: var(--pivot-form-dialog-title-background, #DDD);
+    background-color: var(--pivot-form-dialog-title-background-color, #DDD);
     text-align: right;
-    height: 27px;
+    height: var(--pivot-form-dialog-title-bar-height, 27px);
 }
 .dialog-minimize, .dialog-restore, .dialog-maximize, .dialog-close {
     display: inline-block;
-    background-size: 27px;
-    background-repeat: no-repeat;
-    width: 27px;
-    height: 18px;
-    margin: 3px;
-    cursor: pointer;
+    background-size: var(--pivot-form-dialog-control-box-background-size, 27px);
+    background-repeat: var(--pivot-form-dialog-control-box-background-repeat, no-repeat);
+    width: var(--pivot-form-dialog-control-box-width, 27px);
+    height: var(--pivot-form-dialog-control-box-width, 18px);
+    margin: var(--pivot-form-dialog-control-box-margin, 3px);
+    cursor: var(--pivot-form-dialog-control-box-cursor, pointer);
 }
 .dialog-minimize {
-    background-image: url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=);
+    background-image: var(--pivot-form-dialog-control-box-minimize-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=));
 }
 .dialog-restore {
-    background-image: url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==);
+    background-image: var(--pivot-form-dialog-control-box-restore-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==));
 }
 .dialog-maximize {
-    background-image: url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=);
+    background-image: var(--pivot-form-dialog-control-box-maximize-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=));
 }
 .dialog-close {
-    background-image: url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8Xd3dyH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==);
+    background-image: var(--pivot-form-dialog-control-box-close-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8Xd3dyH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==));
+}
+.dialog-modal {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    background-color: var(--pivot-form-dialog-modal-background-color, rgba(0, 0, 0, 0.25));
+    z-index: -1;
+}
+.dialog-maximized .dialog-maximize {
+    background-image: var(--pivot-form-dialog-control-box-restore-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==));
+}
+.dialog-maximized {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.dialog-minimized {
+    width: 200px;
+    height: 27px;
+    right: 0;
+}
+.dialog-minimized .dialog-minimize {
+    background-image: var(--pivot-form-dialog-control-box-restore-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==));
+}
+.dialog-minimized .dialog-title {
+    font-size: 17px;
+}
+.dialog-minimized .dialog-restore,
+.dialog-minimized .dialog-close,
+.dialog-minimized .dialog-content {
+    display: none;
+}
+.dialog-closed {
+    display: none;
 }
