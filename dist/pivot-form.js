@@ -1103,7 +1103,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.maximize = maximize;
             intf.minimize = minimize;
             intf.maximize = maximize;
-            self.titleBar.ondblclick = maximize;
+            //self.titleBar.ondblclick = maximize;
             self.controlBoxClose.onclick = close;
             self.controlBoxMinimize.onclick = minimize;
             self.controlBoxMaximize.onclick = maximize;
