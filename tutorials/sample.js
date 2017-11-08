@@ -3,13 +3,14 @@ document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var p = window.pivotForm();
     p.name = 'blah';
+    p.mode = 'dialog';
     p.title = 'Taizo Sakai';
-
     var data = {column1: 'foo', column2: 'bar'};
     var schema = [
         {
             type: 'tabs',
-            style: {
+            static: true,
+            containerStyle: {
                 width: '100%'
             },
             tabs: {
