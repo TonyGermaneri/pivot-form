@@ -16,7 +16,7 @@
 }
 .tabbed-component {
     white-space: nowrap;
-    width: 100%;
+    width: calc(100% - 10px);
 }
 .tabs {
     display: var(--pivot-form-tab-component-display, inline-flex);
@@ -140,6 +140,8 @@
 .dialog-content {
     padding: var(--pivot-form-dialog-content-background-padding, 5px);
     background-color: var(--pivot-form-dialog-content-background-color, #FFF);
+    min-height: 100%;
+    min-width: 100%;
 }
 .dialog-title {
     float: var(--pivot-form-dialog-title-float, left);
