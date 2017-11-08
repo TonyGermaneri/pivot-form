@@ -425,11 +425,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 if (self.intf.mode === 'dialog' || self.intf.dialogOptions !== undefined) {
                     dialogOptions = self.intf.dialogOptions || {};
                     dialogOptions.title = self.intf.title;
-                    self.intf.dialog = dialog(dialogOptions);
-                    self.intf.dialog.addEventListener('resized', dispatchResize);
-                    self.intf.dialog.content.appendChild(self.form);
-                    self.shadowRoot.appendChild(self.intf.dialog);
-                    self.intf.dialog.attached = true;
+                    self.dialog = dialog(dialogOptions);
+                    self.dialog.addEventListener('resized', dispatchResize);
+                    self.dialog.content.appendChild(self.form);
+                    self.shadowRoot.appendChild(self.dialog);
+                    self.dialog.attached = true;
                 }
                 addComponents(defaultComponents);
                 addComponents(self.args.components);
@@ -437,8 +437,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             }
             loadState();
             initSchema();
-            if (self.intf.dialog) {
-                self.intf.dialog.center();
+            if (self.dialog) {
+                self.dialog.center();
             }
         }
         function dataSetter(value) {
@@ -505,20 +505,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.mode = 'block';
                 }
                 if (self.mode === 'dialog') {
-                    if (self.intf.dialog && self.intf.dialog.dispose) {
-                        self.intf.dialog.dispose();
+                    if (self.dialog && self.dialog.dispose) {
+                        self.dialog.dispose();
                     }
-                    self.intf.dialog = dialog(self.dialogOptions);
-                    self.intf.dialog.title.innerHTML = self.title;
-                    self.intf.dialog.content.appendChild(self.form);
-                    self.intf.appendChild(self.intf.dialog);
-                    self.intf.dialog.attached = true;
+                    self.dialog = dialog(self.dialogOptions);
+                    self.dialog.title.innerHTML = self.title;
+                    self.dialog.content.appendChild(self.form);
+                    self.intf.appendChild(self.dialog);
+                    self.dialog.attached = true;
                     requestAnimationFrame(function () {
-                        self.intf.dialog.center();
+                        self.dialog.center();
                     });
                 } else {
-                    if (self.intf.dialog) {
-                        self.intf.dialog.attached = false;
+                    if (self.dialog) {
+                        self.dialog.attached = false;
                     }
                     self.intf.appendChild(self.form);
                 }
@@ -530,8 +530,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             },
             set: function (value) {
                 self.title = value;
-                if (self.intf.dialog) {
-                    self.intf.dialog.title.innerHTML = value;
+                if (self.dialog) {
+                    self.dialog.title.innerHTML = value;
                 }
             }
         });
