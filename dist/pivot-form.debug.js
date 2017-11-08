@@ -451,6 +451,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function dataGetter() {
             var d = self.data || {};
             Object.keys(self.fields).forEach(function (fieldKey) {
+                if (fieldKey === 'undefined') {
+                    return;// field is a non-data control with no name so no data binding
+                }
                 var cValue = self.fields[fieldKey].component.value;
                 Object.assign(d, cValue);
             });
