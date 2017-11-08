@@ -1108,6 +1108,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 }
             });
             intf.open = open;
+            intf.close = close;
             intf.maximize = maximize;
             intf.minimize = minimize;
             intf.maximize = maximize;
