@@ -1001,6 +1001,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.addEventListener('mouseup', endMove);
             document.addEventListener('mousemove', moveResizeDialog);
         }
+        function resize() {
+            if (self.maximized) {
+                intf.style.width = window.innerWidth + 'px';
+                intf.style.height = window.innerHeight + 'px';
+            }
+        }
+        function dispose() {
+            if (intf.parentNode) {
+                intf.parentNode.removeChild(intf);
+            }
+            window.removeEventListener('resize', resize);
+        }
         function open() {
             intf.classList.remove('dialog-closed');
             window.dispatchEvent(new Event('resize'));
@@ -1061,12 +1073,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             self.controlBoxMaximize = ce('div', null, {className: 'dialog-maximize'});
             self.controlBoxClose = ce('div', self.titleBar, {className: 'dialog-close'});
             self.titleBar.addEventListener('mousedown', beginDialogMove);
-            window.addEventListener('resize', function () {
-                if (self.maximized) {
-                    intf.style.width = window.innerWidth + 'px';
-                    intf.style.height = window.innerHeight + 'px';
-                }
-            });
+            window.addEventListener('resize', resize);
             intf.addEventListener('mousedown', beginDialogMove);
             intf.addEventListener('mousemove', function (e) {
                 resizeMouseHover(e);
@@ -1109,6 +1116,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             });
             intf.open = open;
             intf.close = close;
+            intf.maximize = dispose;
             intf.maximize = maximize;
             intf.minimize = minimize;
             intf.maximize = maximize;
