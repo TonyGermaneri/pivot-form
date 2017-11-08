@@ -87,6 +87,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
     'use strict';
     return {
+        jsonCopy: function (value) { return JSON.parse(JSON.stringify(value)); },
         addEventInterface: function (component, header, index, data, intf) {
             component.events = {};
             component.addEventListener = function (ev, fn) {
@@ -632,7 +633,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 label = ce('div', component, {className: 'label'}),
                 input = ce('input', component, inputOptions);
             component.containerStyle = {};
-            label.innerHTML = header.name;
+            label.innerHTML = header.title === undefined ? header.name : header.title;
             component.header = header;
             component.label = label;
             input.onchange = function () {
@@ -649,9 +650,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     input.value = v === undefined ? '' : v;
                 }
             });
-            sp(input, header.style);
-            sp(label, header.labelStyle);
-            sp(component, header.componentStyle);
+            sp(input.style, header.style);
+            sp(label.style, header.labelStyle);
+            sp(component.style, header.componentStyle);
             sp(component.containerStyle, header.containerStyle);
             util.asyncValueSetter(component);
             component.addEventListener = input.addEventListener;
@@ -671,12 +672,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             label = ce('div', component, {className: 'label'}),
             input = ce('select', component, {className: 'select'}),
             options = [];
-        label.innerHTML = header.name;
+        label.innerHTML = header.title === undefined ? header.name : header.title;
         component.label = label;
         component.containerStyle = {};
-        sp(input, header.style);
-        sp(label, header.labelStyle);
-        sp(component, header.componentStyle);
+        sp(input.style, header.style);
+        sp(label.style, header.labelStyle);
+        sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         if (header.enum) {
             header.enum.forEach(function (item) {
@@ -708,10 +709,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     components.title = function (header, index, data, intf) {
         var component = ce('div', null, {className: 'component'}),
             label = ce('div', component, {className: 'label'});
-        label.innerHTML = header.name;
+        label.innerHTML = header.title === undefined ? header.name : header.title;
         component.containerStyle = {};
-        sp(label, header.style);
-        sp(component, header.componentStyle);
+        sp(label.style, header.style);
+        sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         Object.defineProperty(component, 'value', {
             get: function () {
@@ -741,9 +742,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         Object.keys(header).forEach(function (propertyKey) {
             grid[propertyKey] = header[propertyKey];
         });
+        sp(grid, header);
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
-        sp(grid, header.style);
-        sp(component, header.componentStyle);
+        sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         component.resize = function () {
             grid.resize(true);
@@ -751,7 +752,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function changeEvent() {
             // break circular refs
             if (!data) { return; }
-            data[header.name] = JSON.parse(JSON.stringify(grid.data));
+            data[header.name] = util.jsonCopy(grid.data);
             component.dispatchEvent('change', {data: data});
         }
         util.addEventInterface(component, header, index, data, intf);
@@ -781,7 +782,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         f.data = data;
         f.addComponents(pContext.components);
         sp(f.containerStyle, header.containerStyle);
-        sp(f, header.style);
+        sp(f.style, header.style);
         Object.defineProperty(f, 'value', {
             get: function () {
                 return f.data;
@@ -856,7 +857,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         });
         util.addEventInterface(component, header, index, data, intf);
-        sp(component, header.componentStyle);
+        sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         Object.keys(header.tabs).forEach(function (tabName, index) {
             if (defaultTab === index) { return; }
