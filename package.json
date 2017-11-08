@@ -6,8 +6,11 @@
   "scripts": {
     "test": "mocha",
     "build-watch": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd --watch -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map'",
-    "build-debug": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map';cat ./dist/pivot-form.debug.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.debug.js;",
-    "build": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.js --devtool source-map --output-source-map-filename='pivot-form.map';cat ./dist/pivot-form.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.js;"
+    "build-debug": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map';npm run build-debug-css",
+    "build": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.js --devtool source-map --output-source-map-filename='pivot-form.map';npm run build-css",
+    "build-css": "cat ./dist/pivot-form.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.js;",
+    "build-debug-css": "cat ./dist/pivot-form.debug.js | awk -v var=\"`./scripts/toBase64 ./lib/index.css`\" '{sub(/cssurl-target/, var)}1' > ./dist/pivot-form.debug.js;",
+    "build-all": "npm run build;npm run build-debug"
   },
   "repository": {
     "type": "git",
