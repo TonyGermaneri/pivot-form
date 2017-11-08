@@ -304,6 +304,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 var container = ce('div', null, {className: 'component-item'}),
                     field = self.fields[inputFieldName],
                     handle = ce('div', field.header.static ? null : container, {className: 'item-handle'});
+                if (field.header.hidden) {
+                    container.style.display = 'none';
+                }
                 field.container = container;
                 field.handle = container;
                 container.setAttribute('data-uniqueId', self.uniqueId);
@@ -530,6 +533,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 if (self.intf.dialog) {
                     self.intf.dialog.title.innerHTML = value;
                 }
+            }
+        });
+        Object.defineProperty(self.intf, 'dialog', {
+            get: function () {
+                return self.dialog;
             }
         });
         Object.defineProperty(self.intf, 'schema', {
