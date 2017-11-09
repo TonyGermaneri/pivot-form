@@ -143,6 +143,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     e.component.classList.add('loading');
                     r = value.apply(e, [callback]);
                     syncReturn = r !== undefined;
+                    if (syncReturn) {
+                        setValue(r);
+                    }
                     return;
                 }
                 setValue(value);
