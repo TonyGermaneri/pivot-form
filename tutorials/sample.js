@@ -3,45 +3,16 @@ document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var p = window.pivotForm();
     p.name = 'blah';
-    p.mode = 'dialog';
     p.title = 'Taizo Sakai';
     var data = {column1: 'foo', column2: 'bar'};
     var schema = [
         {
-            type: 'tabs',
-            static: true,
-            containerStyle: {
-                width: '100%'
-            },
-            tabs: {
-                'Tab1': [
-                    {
-                        name: 'column1',
-                        type: 'canvas-datagrid',
-                        static: true,
-                        style: {
-                            height: '150px'
-                        }
-                    },
-                    {
-                        name: 'column2',
-                        type: 'string'
-                    }
-                ],
-                'Tab2': [
-                    {
-                        name: 'column1',
-                        type: 'canvas-datagrid',
-                        static: true,
-                        style: {
-                            height: '150px'
-                        }
-                    },
-                    {
-                        name: 'column2',
-                        type: 'string'
-                    }
-                ]
+            name: 'col1',
+            value: function (callback) {
+                var context = this;
+                setTimeout(function () {
+                    callback('blah ' + context.header.name);
+                }, 100);
             }
         }
     ];

@@ -13,10 +13,12 @@
     width: var(--pivot-form-label-width, 100px);
     display: var(--pivot-form-label-display, inline-block);
     font-family: var(--pivot-form-label-font-family, sans-serif);
+    color: var(--pivot-form-label-color, #000);
+    background-color: var(--pivot-form-label-background-color, transparent);
 }
 .tabbed-component {
     white-space: nowrap;
-    width: calc(100% - 10px);
+    width: var(--pivot-form-tab-component-width, '100%');
 }
 .tabs {
     display: var(--pivot-form-tab-component-display, inline-flex);
