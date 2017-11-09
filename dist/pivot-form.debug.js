@@ -241,6 +241,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 return value === field[key];
             });
         }
+        function getFieldByName(value) {
+            return getFieldsByPropertyValue('name', value)[0];
+        }
         function getFieldById(value) {
             return getFieldsByPropertyValue('id', value)[0];
         }
@@ -520,6 +523,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         self.intf.isContainer = true;
         self.intf.addComponents = addComponents;
         self.intf.addComponent = addComponent;
+        self.intf.getFieldByName = getFieldByName;
         self.intf.getFieldById = getFieldById;
         self.intf.getFieldsByPropertyValue = getFieldsByPropertyValue;
         Object.defineProperty(self.intf, 'fields', {
@@ -842,6 +846,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         }
         grid.addEventListener('datachanged', changeEvent);
         grid.addEventListener('endedit', changeEvent);
+        Object.defineProperty(grid, 'value', {
+            set: function (value) {
+                grid.data = value;
+            },
+            get: function () {
+                return grid.data;
+            }
+        });
         Object.defineProperty(component, 'value', {
             get: function () {
                 return grid.data;
