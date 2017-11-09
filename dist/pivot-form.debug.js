@@ -234,7 +234,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         }
         function getFieldsByPropertyValue(key, value) {
             return self.fields.filter(function (field) {
-                return value.test(field[key]);
+                return value === field[key];
             });
         }
         function getFieldById(value) {
@@ -359,12 +359,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 sp(handle, field.handleStyle);
                 self.form.appendChild(container);
                 self.inputFieldOrganicOrder.push(container);
-                dataStub[field.header.name] = field.header.value;
-                if (field.header.value) {
+                if (field.header.name && field.header.value) {
+                    dataStub[field.header.name] = field.header.value;
                     self.initializingFields[organicFieldIndex] = field;
+                    field.component.addEventListener('initialized', initialized);
+                    field.component.value = dataStub;
                 }
-                field.component.value = dataStub;
-                field.component.addEventListener('initialized', initialized);
             });
             updateFlexOrder();
         }
@@ -381,10 +381,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 self.preInitDataSet = newData;
                 return;
             }
+            // set component values
             self.fields.forEach(function (field) {
-                if (!newData.hasOwnProperty(field.header.name)) { return; }
-                self.data[field.header.name] = newData[field.header.name];
-                field.component.value = self.data;
+                field.component.value = newData;
             });
         }
         function disposeFields() {
@@ -420,7 +419,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             self.fields = [];
             self.schema.forEach(function (header, index) {
                 var t = self.components.string,
-                    id = header.name !== undefined ? getNewId() : header.name,
+                    id = header.name === undefined ? getNewId() : header.name,
                     component;
                 if (getFieldById(id)) {
                     throw new Error('Duplicate id in schema ' + id);
@@ -492,11 +491,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function dataGetter() {
             var d = self.data || {};
             self.fields.forEach(function (field) {
-                if (field.name === 'undefined') {
-                    return;// field is a non-data control with no name so no data binding
+                var cValue = {};
+                if (field.component.isContainer) {
+                    Object.assign(d, field.component.value);
+                } else {
+                    cValue[field.header.name] = field.component.value;
+                    Object.assign(d, cValue);
                 }
-                var cValue = field.component.value;
-                Object.assign(d, cValue);
             });
             return d;
         }
@@ -512,11 +513,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         // public interface definitions
         self.intf.init = init;
         self.intf.dispose = dispose;
+        self.intf.isContainer = true;
         self.intf.addComponents = addComponents;
         self.intf.addComponent = addComponent;
         self.intf.getFieldById = getFieldById;
         self.intf.getFieldsByPropertyValue = getFieldsByPropertyValue;
-        self.intf.fields = self.fields;
+        Object.defineProperty(self.intf, 'fields', {
+            get: function () {
+                return self.fields;
+            }
+        });
         Object.defineProperty(self.intf, 'isValid', {
             get: function () {
                 return false;
@@ -662,7 +668,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser: true, unparam: true, todo: true, evil: true*/
-/*globals define: false, requestAnimationFrame: false*/
+/*globals define: false, requestAnimationFrame: false, Event: false*/
 !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! ../util.js */ 0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
     'use strict';
     var components = {}, ce = util.createElement, sp = util.setProperties;
@@ -710,7 +716,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         components[typeKey] = inputComponentFactory({className: 'input', type: typeKey});
     });
     components.select = function (header, index, form) {
-        var component = ce('div', null, {className: 'component'}),
+        var componentContext = this,
+            component = ce('div', null, {className: 'component'}),
             label = ce('div', component, {className: 'label'}),
             input = ce('select', component, {className: 'select'}),
             fEnumVal,
@@ -737,6 +744,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         label.innerHTML = header.title === undefined ? header.name : header.title;
         component.label = label;
         component.input = input;
+        component.header = header;
         component.containerStyle = {};
         sp(input.style, header.style);
         sp(label.style, header.labelStyle);
@@ -745,10 +753,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         if (Array.isArray(header.enum)) {
             fillOptions(header.enum);
         } else if (typeof header.enum === 'function') {
-            fEnumVal = header.enum(function (value) {
+            fEnumVal = header.enum.apply(componentContext, [function (value) {
                 if (fEnumVal) { throw new Error('Async return detected from value already set via sync function.'); }
                 fillOptions(value);
-            });
+            }]);
             if (fEnumVal) {
                 fillOptions(fEnumVal);
             }
@@ -777,6 +785,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             label = ce('div', component, {className: 'label'});
         label.innerHTML = header.title === undefined ? header.name : header.title;
         component.containerStyle = {};
+        component.label = label;
+        component.header = header;
         sp(label.style, header.style);
         sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
@@ -806,6 +816,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             grid = window.canvasDatagrid();
         component.containerStyle = {};
         component.input = grid;
+        component.header = header;
         component.appendChild(grid);
         Object.keys(header).forEach(function (propertyKey) {
             grid[propertyKey] = header[propertyKey];
@@ -821,7 +832,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             // break circular refs
             if (!form.data) { return; }
             form.data[header.name] = util.jsonCopy(grid.data);
-            component.dispatchEvent('change', {data: form.data});
+            component.dispatchEvent(new Event('change'));
         }
         grid.addEventListener('datachanged', changeEvent);
         grid.addEventListener('endedit', changeEvent);
@@ -858,9 +869,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 return f.data;
             },
             set: function (value) {
-                Object.keys(f.fields).forEach(function (fieldKey) {
-                    f.fields[fieldKey].value = value;
-                });
+                f.data = value;
             }
         });
         return f;
@@ -873,6 +882,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             activeTab,
             defaultTab = header.defaultTabIndex || 0;
         component.containerStyle = {};
+        component.isContainer = true;
         function activateTab(activeTabName) {
             var activeTabItem = header.tabs[activeTabName];
             activeTab = activeTabName;
@@ -938,7 +948,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             get: function () {
                 var d = {};
                 tabComponents.forEach(function (component) {
-                    Object.assign(d, component.value);
+                    var cValue = {};
+                    if (component.isContainer) {
+                        Object.assign(d, component.value);
+                    } else {
+                        cValue[component.header.name] = component.value;
+                        Object.assign(d, cValue);
+                    }
                 });
                 return d;
             },
