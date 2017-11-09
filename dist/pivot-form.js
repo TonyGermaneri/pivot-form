@@ -115,22 +115,27 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 return defaultPrevented;
             };
         },
-        asyncValueSetter: function (el) {
+        asyncValueSetter: function (e) {
             return function (value) {
+                function setValue(n) {
+                    var v = n === undefined ? '' : n;
+                    e.data[e.header.name] = v;
+                    if (e.input) { e.input.value = v; }
+                }
                 var r,
                     syncReturn,
-                    callback = function (value) {
+                    callback = function (asyncValue) {
                         if (syncReturn) {
                             throw new Error('Async return detected from value already set via sync function.');
                         }
-                        el.value = value;
+                        setValue(asyncValue);
                     };
                 if (typeof value === 'function') {
-                    r = value(callback);
+                    r = value.apply(e, [callback]);
                     syncReturn = r !== undefined;
                     return;
                 }
-                el.value = value;
+                setValue(value);
             };
         },
         setProperties: function (root, props) {
@@ -207,12 +212,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         self.uniqueId = Math.random() + '-' + performance.now();
         self.title = '';
         self.fieldOrder = [];
-        self.fields = {};
+        self.fields = [];
+        self.idCounter = -1;
         self.components = {};
         self.intf = window.customElements ? eval('Reflect.construct(HTMLElement, [], new.target)') : ce('section');
         util.addEventInterface(self.intf);
-        function getFieldByName(name) {
-            return self.fields[name];
+        function getNewId() {
+            self.idCounter += 1;
+            return self.idCounter.toString(36);
+        }
+        function getFieldsByPropertyValue(key, value) {
+            return self.fields.filter(function (field) {
+                return value.test(field[key]);
+            });
+        }
+        function getFieldById(value) {
+            return getFieldsByPropertyValue('id', value)[0];
         }
         function saveState() {
             if (self.name) {
@@ -299,11 +314,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         }
         function createDom() {
-            var iFields = Object.keys(self.fields);
-            iFields.forEach(function (inputFieldName, organicFieldIndex) {
+            self.fields.forEach(function (field, organicFieldIndex) {
                 organicFieldIndex += 1;
                 var container = ce('div', null, {className: 'component-item'}),
-                    field = self.fields[inputFieldName],
                     handle = ce('div', field.header.static ? null : container, {className: 'item-handle'});
                 if (field.header.hidden) {
                     container.style.display = 'none';
@@ -314,7 +327,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 handle.beginReorderFieldFunction = beginReorderField(organicFieldIndex, container);
                 handle.addEventListener('mousedown', handle.beginReorderFieldFunction);
                 container.organicFieldIndex = organicFieldIndex;
-                container.name = inputFieldName;
+                container.name = field.name;
                 self.fieldOrder[organicFieldIndex] = self.fieldOrder[organicFieldIndex] === undefined
                     ? organicFieldIndex : self.fieldOrder[organicFieldIndex];
                 container.appendChild(field.component);
@@ -324,6 +337,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 sp(handle, field.handleStyle);
                 self.form.appendChild(container);
                 self.inputFieldOrganicOrder.push(container);
+                field.component.value = field.header.value;
             });
             updateFlexOrder();
         }
@@ -348,14 +362,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function initData() {
             if (!self.initialized) { return; }
             if (!self.data) { return; }
-            Object.keys(self.fields).forEach(function (inputFieldName) {
-                var inputField = self.fields[inputFieldName];
-                inputField.component.value = self.data;
+            self.fields.forEach(function (field) {
+                field.component.value = self.data;
             });
         }
         function disposeFields() {
-            Object.keys(self.fields).forEach(function (key) {
-                var field = self.fields[key];
+            self.fields.forEach(function (field) {
                 if (field && field.component) {
                     if (field.component.dispose) {
                         field.component.dispose();
@@ -383,10 +395,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 // dispose previous items
                 disposeFields();
             }
-            self.fields = {};
+            self.idCounter = -1;
+            self.fields = [];
             self.schema.forEach(function (header, index) {
                 var t = self.components.string,
+                    id = header.name !== undefined ? getNewId() : header.name,
                     component;
+                if (getFieldById(id)) {
+                    throw new Error('Duplicate id in schema ' + id);
+                }
                 if (self.components[header.type]) {
                     t = self.components[header.type];
                 }
@@ -394,11 +411,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 component.addEventListener('change', function () {
                     self.intf.dispatchEvent('change', {data: self.data});
                 });
-                self.fields[header.name] = {
+                self.fields.push({
+                    name: header.name === undefined ? '__' + id : header.name,
+                    id: id,
                     header: header,
                     component: component,
                     index: index
-                };
+                });
             });
             createDom();
             initData();
@@ -474,7 +493,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         self.intf.dispose = dispose;
         self.intf.addComponents = addComponents;
         self.intf.addComponent = addComponent;
-        self.intf.getFieldByName = getFieldByName;
+        self.intf.getFieldById = getFieldById;
+        self.intf.getFieldsByPropertyValue = getFieldsByPropertyValue;
         self.intf.fields = self.fields;
         Object.defineProperty(self.intf, 'isValid', {
             get: function () {
@@ -645,16 +665,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     d[header.name] = input.value;
                     return d;
                 },
-                set: function (value) {
-                    var v = value[header.name];
-                    input.value = v === undefined ? '' : v;
-                }
+                set: util.asyncValueSetter({
+                    component: component,
+                    input: input,
+                    label: label,
+                    header: header,
+                    data: data,
+                    form: intf
+                })
             });
             sp(input.style, header.style);
             sp(label.style, header.labelStyle);
             sp(component.style, header.componentStyle);
             sp(component.containerStyle, header.containerStyle);
-            util.asyncValueSetter(component);
             component.addEventListener = input.addEventListener;
             component.removeEventListener = input.removeEventListener;
             return component;
@@ -671,7 +694,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var component = ce('div', null, {className: 'component'}),
             label = ce('div', component, {className: 'label'}),
             input = ce('select', component, {className: 'select'}),
+            fEnumVal,
             options = [];
+        function fillOptions(arr) {
+            arr.forEach(function (item) {
+                var option;
+                if (!Array.isArray(item)) { item = [item, item]; }
+                option = ce('option', input, {value: item[0], innerHTML: item[1]});
+                sp(option, header.optionStyle);
+                options.push(option);
+            });
+        }
         label.innerHTML = header.title === undefined ? header.name : header.title;
         component.label = label;
         component.containerStyle = {};
@@ -679,14 +712,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         sp(label.style, header.labelStyle);
         sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
-        if (header.enum) {
-            header.enum.forEach(function (item) {
-                var option;
-                if (!Array.isArray(item)) { item = [item, item]; }
-                option = ce('option', input, {value: item[0], innerHTML: item[1]});
-                sp(option, header.optionStyle);
-                options.push(option);
+        if (Array.isArray(header.enum)) {
+            fillOptions(header.enum);
+        } else if (typeof header.enum === 'function') {
+            fEnumVal = header.enum(function (value) {
+                if (fEnumVal) { throw new Error('Async return detected from value already set via sync function.'); }
+                fillOptions(value);
             });
+            if (fEnumVal) {
+                fillOptions(fEnumVal);
+            }
         }
         input.onchange = function () {
             data[header.name] = input.value;
@@ -697,11 +732,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 d[header.name] = input.value;
                 return d;
             },
-            set: function (value) {
-                input.value = value[header.name];
-            }
+            set: util.asyncValueSetter({
+                component: component,
+                input: input,
+                label: label,
+                header: header,
+                data: data,
+                form: intf
+            })
         });
-        util.asyncValueSetter(component);
         component.addEventListener = input.addEventListener;
         component.removeEventListener = input.removeEventListener;
         return component;
@@ -720,9 +759,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 d[header.name] = label.innerHTML;
                 return d;
             },
-            set: function (value) {
-                label.innerHTML = value[header.name];
-            }
+            set: util.asyncValueSetter(data, header.name)
         });
         return component;
     };
@@ -764,9 +801,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 d[header.name] = grid.data;
                 return d;
             },
-            set: function (value) {
-                grid.data = value[header.name];
-            }
+            set: util.asyncValueSetter({
+                component: component,
+                input: grid,
+                label: grid.name,
+                header: header,
+                data: data,
+                form: intf
+            })
         });
         return component;
     };
