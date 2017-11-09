@@ -117,6 +117,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         },
         asyncValueSetter: function (e) {
             return function (value) {
+                if (!value) { return; }
                 value = value[e.header.name];
                 function setValue(n) {
                     var v = n === undefined ? '' : n;
