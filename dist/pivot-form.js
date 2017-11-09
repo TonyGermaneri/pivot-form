@@ -158,10 +158,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             });
         },
         addEvents: function (el, events) {
-            Object.keys(events).forEach(function (eKey) {
-                el.addEventListener(eKey, events[eKey]);
-            });
-            return;
+            if (events && typeof events === 'object' && events !== null) {
+                Object.keys(events).forEach(function (eKey) {
+                    el.addEventListener(eKey, events[eKey]);
+                });
+            }
         },
         createElement: function createElement(tag, parentNode, attributes) {
             var el = document.createElement(tag);
