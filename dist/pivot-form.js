@@ -157,6 +157,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 root[keyName] = props[keyName];
             });
         },
+        addEvents: function (el, events) {
+            Object.keys(events).forEach(function (eKey) {
+                el.addEventListener(eKey, events[eKey]);
+            });
+            return;
+        },
         createElement: function createElement(tag, parentNode, attributes) {
             var el = document.createElement(tag);
             if (attributes) {
@@ -707,6 +713,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     form: form
                 })
             });
+            util.addEvents(input, header.events);
+            util.addEvents(label, header.labelEvents);
+            util.addEvents(component, header.componentEvents);
             sp(input.style, header.style);
             sp(label.style, header.labelStyle);
             sp(component.style, header.componentStyle);
@@ -756,6 +765,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.input = input;
         component.header = header;
         component.containerStyle = {};
+        util.addEvents(input, header.events);
+        util.addEvents(label, header.labelEvents);
+        util.addEvents(component, header.componentEvents);
         sp(input.style, header.style);
         sp(label.style, header.labelStyle);
         sp(component.style, header.componentStyle);
@@ -800,6 +812,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         sp(label.style, header.style);
         sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
+        util.addEvents(label, header.labelEvents);
+        util.addEvents(component, header.componentEvents);
         Object.defineProperty(component, 'value', {
             get: function () {
                 return label.innerHTML;
@@ -833,6 +847,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         });
         sp(grid, header);
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
+        util.addEvents(grid, header.events);
+        util.addEvents(component, header.componentEvents);
         sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         component.resize = function () {
@@ -882,6 +898,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         f.addComponents(pContext.components);
         sp(f.containerStyle, header.containerStyle);
         sp(f.style, header.style);
+        util.addEvents(f, header.events);
         Object.defineProperty(f, 'value', {
             get: function () {
                 return f.data;
@@ -955,6 +972,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         });
         util.addEventInterface(component, header, index, form);
+        util.addEvents(component, header.events);
         sp(component.style, header.componentStyle);
         sp(component.containerStyle, header.containerStyle);
         Object.keys(header.tabs).forEach(function (tabName, index) {
