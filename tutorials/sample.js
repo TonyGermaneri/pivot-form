@@ -4,14 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var p = window.pivotForm();
     p.name = 'blah';
     p.title = 'Taizo Sakai';
-    var data = {column1: 'foo', column2: 'bar'};
+    var data = {col1: 'updated value', column2: 'bar'};
     var schema = [
         {
             name: 'col1',
             value: function (callback) {
                 var context = this;
                 setTimeout(function () {
-                    callback('blah ' + context.header.name);
+                    callback('default value ' + context.header.name);
                 }, 100);
             }
         }
