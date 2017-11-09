@@ -7,17 +7,58 @@ document.addEventListener('DOMContentLoaded', function () {
     var data = {col1: 'updated value', column2: 'bar'};
     var schema = [
         {
-            name: 'col1',
-            value: function (callback) {
-                var context = this;
-                setTimeout(function () {
-                    callback('default value ' + context.header.name);
-                }, 100);
+            name: 'col3'
+        },
+        {
+            type: 'tabs',
+            tabs: {
+                text: [{
+                    type: 'pivot-form',
+                    schema: [{
+                        name: 'col1',
+                        value: function (callback) {
+                            var context = this;
+                            setTimeout(function () {
+                                callback('default value ' + context.header.name);
+                            }, 100);
+                        }
+                    }]
+                }],
+                select: [{
+                    type: 'pivot-form',
+                    schema: [{
+                        name: 'col2',
+                        type: 'select',
+                        enum: function (callback) {
+                            callback([1, 2, 3]);
+                        },
+                        value: function (callback) {
+                            setTimeout(function () {
+                                callback(3);
+                            }, 100);
+                        }
+                    }]
+                }],
+                grid: [{
+                    name: 'col4',
+                    type: 'canvas-datagrid',
+                    style: {
+                        height: '150px',
+                        width: '300px'
+                    },
+                    data: function (callback) {
+                        setTimeout(function () {
+                            callback([{'Grid-col-1': 'a'}]);
+                        }, 200);
+                    }
+                }]
             }
         }
     ];
     p.schema = schema;
-    p.data = data;
+    setTimeout(function (){
+        p.data = data;
+    }, 200);
     // p.schema = [
     //     {
     //         type: 'tabs',
