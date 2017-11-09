@@ -724,13 +724,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             fEnumVal,
             options = [];
         function fillValue(val) {
+            var cData = {};
+            cData[header.name] = val;
             util.asyncValueSetter({
                 component: component,
                 input: input,
                 label: label,
                 header: header,
                 form: form
-            })(val);
+            })(cData);
         }
         function fillOptions(arr) {
             arr.forEach(function (item) {
