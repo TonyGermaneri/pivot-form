@@ -15,10 +15,18 @@
     font-family: var(--pivot-form-label-font-family, sans-serif);
     color: var(--pivot-form-label-color, #000);
     background-color: var(--pivot-form-label-background-color, transparent);
+    padding-top: var(--pivot-form-label-padding-top, 2px);
+    padding-left: var(--pivot-form-label-padding-left, 4px);
+    padding-bottom: var(--pivot-form-label-padding-bottom, 2px);
+    padding-right: var(--pivot-form-label-padding-right, 3px);
+    margin-top: var(--pivot-form-label-margin-top, 2px);
+    margin-left: var(--pivot-form-label-margin-left, 1px);
+    margin-bottom: var(--pivot-form-label-margin-bottom, 2px);
+    margin-right: var(--pivot-form-label-margin-right, 1px);
 }
 .tabbed-component {
     white-space: nowrap;
-    width: var(--pivot-form-tab-component-width, '100%');
+    width: var(--pivot-form-tab-component-width, 100%);
 }
 .tabs {
     display: var(--pivot-form-tab-component-display, inline-flex);
@@ -143,7 +151,6 @@
     padding: var(--pivot-form-dialog-content-background-padding, 5px);
     background-color: var(--pivot-form-dialog-content-background-color, #FFF);
     min-height: 100%;
-    min-width: 100%;
 }
 .dialog-title {
     float: var(--pivot-form-dialog-title-float, left);
@@ -178,13 +185,6 @@
 }
 .dialog-close {
     background-image: var(--pivot-form-dialog-control-box-close-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8Xd3dyH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==));
-}
-.dialog-modal {
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    background-color: var(--pivot-form-dialog-modal-background-color, rgba(0, 0, 0, 0.25));
-    z-index: var(--pivot-form-dialog-modal-z-index, 9999);
 }
 .dialog-maximized .dialog-maximize {
     background-image: var(--pivot-form-dialog-control-box-restore-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==));
