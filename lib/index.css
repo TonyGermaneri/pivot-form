@@ -137,7 +137,7 @@
     border-width: var(--pivot-form-dialog-border-width, 1px);
     position: var(--pivot-form-dialog-position, absolute);
     overflow: var(--pivot-form-dialog-overflow, hidden);
-    z-index: 2;
+    z-index: var(--pivot-form-dialog-z-index, 10000);
 }
 .dialog-content {
     padding: var(--pivot-form-dialog-content-background-padding, 5px);
@@ -184,7 +184,7 @@
     width: 100%;
     position: fixed;
     background-color: var(--pivot-form-dialog-modal-background-color, rgba(0, 0, 0, 0.25));
-    z-index: -1;
+    z-index: var(--pivot-form-dialog-modal-z-index, 9999);
 }
 .dialog-maximized .dialog-maximize {
     background-image: var(--pivot-form-dialog-control-box-restore-background-image, url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==));
