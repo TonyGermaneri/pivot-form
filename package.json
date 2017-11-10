@@ -1,6 +1,6 @@
 {
   "name": "pivot-form",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Schema based hierarchical form component.",
   "main": "lib/index.js",
   "scripts": {
