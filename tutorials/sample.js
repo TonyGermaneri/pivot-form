@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var p = window.pivotForm();
     p.name = 'blah';
     p.title = 'Taizo Sakai';
-    var data = {col1: 'updated value', column2: 'bar'};
+    var data = {col1: 'updated value', column2: 'bar', col4: [{a: 'b', c: 'd'}]};
     var schema = [
         {
             name: 'col3'
@@ -18,9 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         name: 'col1',
                         value: function (callback) {
                             var context = this;
-                            setTimeout(function () {
-                                callback('default value ' + context.header.name);
-                            }, 100);
+                            callback('default value ' + context.header.name);
                         }
                     }]
                 }],
@@ -33,9 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             callback([1, 2, 3]);
                         },
                         value: function (callback) {
-                            setTimeout(function () {
-                                callback(3);
-                            }, 100);
+                            callback(3);
                         }
                     }]
                 }],
@@ -47,18 +43,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         width: '300px'
                     },
                     data: function (callback) {
-                        setTimeout(function () {
-                            callback([{'Grid-col-1': 'a'}]);
-                        }, 200);
+                        callback([{'Grid-col-1': 'a'}]);
                     }
                 }]
             }
         }
     ];
     p.schema = schema;
-    setTimeout(function (){
-        p.data = data;
-    }, 200);
+    p.data = data;
+
     // p.schema = [
     //     {
     //         type: 'tabs',
