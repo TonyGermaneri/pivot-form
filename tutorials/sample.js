@@ -9,9 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var data = {col1: 'updated value', col2: 'updated value 2', col3: 2, col4: [{a: 'b', c: 'd'}]};
     var schema = [
         {
-            name: 'col3'
-        },
-        {
             type: 'tabs',
             tabs: [
                 {
@@ -30,6 +27,51 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var context = this;
                                 callback('default value ' + context.header.name);
                             }
+                        },
+                        {
+                            name: 'col6',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col7',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col8',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col9',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col10',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col11',
+                                type: 'select',
+                                enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col12',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col13',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
+                        },
+                        {
+                            name: 'col14',
+                            type: 'select',
+                            enum: function (callback) { callback([1, 2, 3]); }
                         }
                     ]
                 },
@@ -65,6 +107,27 @@ document.addEventListener('DOMContentLoaded', function () {
                             callback([{'Grid-col-1': 'a'}]);
                         }
                     }]
+                },
+                {
+                    name: 'Tab 5',
+                },
+                {
+                    name: 'Tab 6',
+                },
+                {
+                    name: 'Tab 7',
+                },
+                {
+                    name: 'Tab 8',
+                },
+                {
+                    name: 'Tab 9',
+                },
+                {
+                    name: 'Tab 10',
+                },
+                {
+                    name: 'Tab 11',
                 }
             ]
         }
