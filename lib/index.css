@@ -6,27 +6,38 @@
     -ms-user-select: none;
     user-select: none;
 }
-.component {
-    width: var(--pivot-form-component-width, 100%);
+.pivot-form {
+    display: var(--pivot-form-display, flex);
+    flex-direction: var(--pivot-form-flex-direction, row);
+    flex-wrap: var(--pivot-form-flex-wrap, wrap);
+    justify-content: var(--pivot-form-tab-content-justify-content, space-between);
+}
+.component-item {
+    white-space: nowrap;
+    margin: var(--pivot-form-component-item-margin, 4px);
 }
 .label {
-    width: var(--pivot-form-label-width, 100px);
-    display: var(--pivot-form-label-display, inline-block);
+    min-width: var(--pivot-form-label-min-width, 100px);
+    display: inline-block;
     font-family: var(--pivot-form-label-font-family, sans-serif);
     color: var(--pivot-form-label-color, #000);
     background-color: var(--pivot-form-label-background-color, transparent);
-    padding-top: var(--pivot-form-label-padding-top, 2px);
-    padding-left: var(--pivot-form-label-padding-left, 4px);
-    padding-bottom: var(--pivot-form-label-padding-bottom, 2px);
-    padding-right: var(--pivot-form-label-padding-right, 3px);
-    margin-top: var(--pivot-form-label-margin-top, 2px);
-    margin-left: var(--pivot-form-label-margin-left, 1px);
-    margin-bottom: var(--pivot-form-label-margin-bottom, 2px);
-    margin-right: var(--pivot-form-label-margin-right, 1px);
+}
+.select {
+    display: inline-block;
+    min-width: var(--pivot-form-input-min-width, 132px);
+}
+.input {
+    display: inline-block;
+    min-width: var(--pivot-form-input-min-width, 100px);
+    font-size: var(--pivot-form-input-font-size, 12px);
 }
 .tabbed-component {
     white-space: nowrap;
-    width: var(--pivot-form-tab-component-width, 100%);
+    margin-bottom: var(--pivot-form-tab-content-margin-bottom, 8px);
+    margin-top: var(--pivot-form-tab-content-margin-top, 4px);
+    margin-left: var(--pivot-form-tab-content-margin-left, 0);
+    margin-right: var(--pivot-form-tab-content-margin-right, 0);
 }
 .tabs {
     display: var(--pivot-form-tab-component-display, inline-flex);
@@ -35,11 +46,9 @@
     border-top-left-radius: var(--pivot-form-tab-border-top-left-radius, 4px);
     border-left-style: var(--pivot-form-tab-border-style, solid);
     border-left-width: var(--pivot-form-tab-border-width, 1px);
-    border-left-color: var(--pivot-form-tab-border-color, #999);
-    border-bottom-style: var(--pivot-form-tab-border-style, solid);
-    border-bottom-width: var(--pivot-form-tab-border-width, 1px);
-    border-bottom-color: var(--pivot-form-tab-border-color, #999);
-    width: calc(100% - 1px);
+    border-left-color: var(--pivot-form-tab-border-color, #BBB);
+    margin-left: var(--pivot-form-tab-content-margin-right, 10px);
+    margin-right: var(--pivot-form-tab-content-margin-right, 10px);
 }
 .tab {
     padding-top: var(--pivot-form-tab-padding-top, 4px);
@@ -50,7 +59,7 @@
     background-color: var(--pivot-form-tab-background-color, #EEE);
     border-top-left-radius: var(--pivot-form-tab-border-top-left-radius, 4px);
     border-top-right-radius: var(--pivot-form-tab-border-top-right-radius, 4px);
-    border-color: var(--pivot-form-tab-border-color, #999);
+    border-color: var(--pivot-form-tab-border-color, #BBB);
     border-style: var(--pivot-form-tab-border-style, solid);
     border-width: var(--pivot-form-tab-border-width, 1px);
     border-bottom: var(--pivot-form-tab-border-bottom, none);
@@ -58,7 +67,7 @@
     font-size: var(--pivot-form-tab-font-size, 14px);
     display: var(--pivot-form-tab-display, inline-block);
     cursor: var(--pivot-form-tab-cursor, pointer);
-    margin-bottom: var(--pivot-form-tab-margin-bottom, 0);
+    margin-bottom: var(--pivot-form-tab-margin-bottom, -1px);
     margin-left: var(--pivot-form-tab-margin-left, 0);
     font-family: var(--pivot-form-tab-font-family, sans-serif);
     box-shadow: inset 0 -2px 2px var(--pivot-form-tab-inactive-box-shadow-color, #DDD);
@@ -70,12 +79,20 @@
     box-shadow: inset 0 -3px 3px transparent;
 }
 .tab-content {
-    margin-bottom: var(--pivot-form-content-margin-bottom, 5px);
-    padding: var(--pivot-form-content-padding, 7px);
-    border-color: var(--pivot-form-content-border-color, #999);
-    border-style: var(--pivot-form-content-border-style, solid);
-    border-width: var(--pivot-form-content-border-width, 1px);
-    border-top: none;
+    display: var(--pivot-form-tab-content-display, flex);
+    flex-direction: var(--pivot-form-tab-content-flex-direction, row);
+    flex-wrap: var(--pivot-form-tab-content-flex-wrap, wrap);
+    margin-bottom: var(--pivot-form-tab-content-margin-bottom, 0);
+    margin-top: var(--pivot-form-tab-content-margin-top, 0);
+    margin-left: var(--pivot-form-tab-content-margin-left, 10px);
+    margin-right: var(--pivot-form-tab-content-margin-right, 10px);
+    padding-left: var(--pivot-form-tab-content-padding-left, 0);
+    padding-right: var(--pivot-form-tab-content-padding-right, 0);
+    padding-top: var(--pivot-form-tab-content-padding-top, 0);
+    padding-bottom: var(--pivot-form-tab-content-padding-bottom, 0);
+    border-color: var(--pivot-form-tab-content-border-color, #999);
+    border-style: var(--pivot-form-tab-content-border-style, solid);
+    border-width: var(--pivot-form-tab-content-border-width, 1px);
 }
 .tab-content-inactive {
     display: none;
@@ -85,14 +102,11 @@
 }
 .item-handle, .reorder-marker {
     cursor: move;
-    width: 8px;
-    min-width: 8px;
     display: inline-block;
-    float: left;
-    text-align: center;
-    margin-left: 5px;
+    width: 7px;
+    height: 19px;
+    min-width: 5px;
     margin-right: 5px;
-    margin-bottom: 5px;
     text-align: center;
     color: var(--pivot-form-handle-color, #333);
     background-color: var(--pivot-form-handle-background-color, #EEE);
@@ -100,23 +114,6 @@
     border-color: var(--pivot-form-handle-border-color, #CCC);
     border-style: var(--pivot-form-handle-border-style, solid);
     border-width: var(--pivot-form-handle-border-width, 1px);
-}
-.reorder-marker:before, .item-handle:before {
-    content: var(--pivot-form-reorder-marker-content, '\00205E');
-}
-.input {
-    padding-top: var(--pivot-form-input-padding-top, 2px);
-    padding-left: var(--pivot-form-input-padding-left, 4px);
-    padding-bottom: var(--pivot-form-input-padding-bottom, 2px);
-    padding-right: var(--pivot-form-input-padding-right, 3px);
-    margin-top: var(--pivot-form-input-margin-top, 2px);
-    margin-left: var(--pivot-form-input-margin-left, 1px);
-    margin-bottom: var(--pivot-form-input-margin-bottom, 2px);
-    margin-right: var(--pivot-form-input-margin-right, 1px);
-    font-size: var(--pivot-form-input-font-size, 12px);
-}
-.component-item {
-    display: var(--pivot-form-component, inline-flex);
 }
 .reorder-drag-over .item-handle:nth-child(1) {
     background-color: var(--pivot-form-handle-drag-background-color, rgba(110, 168, 255, 1));
@@ -129,18 +126,12 @@
     position: absolute;
     z-index: 10;
 }
-.pivot-form {
-    display: var(--pivot-form-display, flex);
-    flex-direction: var(--pivot-form-flex-direction, row);
-    flex-wrap: var(--pivot-form-flex-wrap, wrap);
-}
 .canvas-datagrid-child {
     width: var(--pivot-form-canvas-datagrid-width, 100%);
-    margin-bottom: var(--pivot-form-canvas-datagrid-margin-bottom, 5px);
 }
 .dialog {
     width: var(--pivot-form-dialog-width, 500px);
-    border-color: var(--pivot-form-dialog-border-color, #000);
+    border-color: var(--pivot-form-dialog-border-color, #888);
     border-style: var(--pivot-form-dialog-border-style, solid);
     border-width: var(--pivot-form-dialog-border-width, 1px);
     position: var(--pivot-form-dialog-position, absolute);
@@ -148,9 +139,16 @@
     z-index: var(--pivot-form-dialog-z-index, 10000);
 }
 .dialog-content {
-    padding: var(--pivot-form-dialog-content-background-padding, 5px);
+    padding-top: var(--pivot-form-dialog-content-padding-top, 2px);
+    padding-left: var(--pivot-form-dialog-content-padding-left, 0);
+    padding-bottom: var(--pivot-form-dialog-content-padding-bottom, 2px);
+    padding-right: var(--pivot-form-dialog-content-padding-right, 0);
     background-color: var(--pivot-form-dialog-content-background-color, #FFF);
-    min-height: 100%;
+    min-height: calc(100% - var(--pivot-form-dialog-title-bar-height, 27px));
+    max-height: calc(100% - var(--pivot-form-dialog-title-bar-height, 27px));
+    min-width: 100%;
+    max-width: 100%;
+    overflow: auto;
 }
 .dialog-title {
     float: var(--pivot-form-dialog-title-float, left);
@@ -159,11 +157,17 @@
     margin-top: var(--pivot-form-dialog-title-margin-top, 3px);
     font-family: var(--pivot-form-dialog-title-font-family, sans-serif);
     cursor: default;
+    position: relative;
+    top: 0px;
+    left: 0px;
 }
 .dialog-title-bar {
     background-color: var(--pivot-form-dialog-title-background-color, #DDD);
     text-align: right;
     height: var(--pivot-form-dialog-title-bar-height, 27px);
+    border-bottom-color: var(--pivot-form-dialog-title-bar-border-bottom-color, #BBB);
+    border-bottom-style: var(--pivot-form-dialog-title-bar-border-bottom-style, solid);
+    border-bottom-width: var(--pivot-form-dialog-title-bar-border-bottom-width, 1px);
 }
 .dialog-minimize, .dialog-restore, .dialog-maximize, .dialog-close {
     display: inline-block;
