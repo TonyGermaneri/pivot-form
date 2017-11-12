@@ -228,7 +228,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     function PivotForm(args) {
         args = args || {};
         // only non-dom related items can be instantiated prior to init (connectedCallback)
-        var dialogOptions, self = {};
+        var self = {};
         self.args = args;
         self.initialized = false;
         self.form = util.createElement('form', null, {className: 'pivot-form'});
@@ -239,6 +239,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         self.idCounter = -1;
         self.data = {};
         self.initializingComponents = [];
+        self.dialogOptions = {};
         self.intf = window.customElements ? eval('Reflect.construct(HTMLElement, [], new.target)')
             : util.createElement('section');
         util.addEventInterface(self.intf);
@@ -494,11 +495,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 self.cssAttached = true;
             }
             self.shadowRoot.appendChild(self.form);
-            if (self.intf.mode === 'dialog' || self.intf.dialogOptions !== undefined) {
-                if (self.dialog) { self.dialog.dispose(); }
-                dialogOptions = self.intf.dialogOptions || {};
-                dialogOptions.title = self.intf.title;
-                self.dialog = dialog(dialogOptions);
+            if (self.intf.mode === 'dialog') {
+                self.dialogOptions.title = self.intf.title;
+                if (!self.dialog) {
+                    self.dialog = dialog(self.dialogOptions);
+                }
                 self.dialog.addEventListener('resized', dispatchResize);
                 self.dialog.content.appendChild(self.form);
                 self.shadowRoot.appendChild(self.dialog);
@@ -563,14 +564,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             get: dataGetter,
             set: dataSetter
         });
-        Object.defineProperty(self.intf, 'dialogOptions', {
-            get: function () {
-                return self.dialogOptions;
-            },
-            set: function (value) {
-                self.dialogOptions = value;
-            }
-        });
         Object.defineProperty(self.intf, 'mode', {
             get: function () {
                 return self.mode;
@@ -582,10 +575,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     self.mode = 'block';
                 }
                 if (self.mode === 'dialog') {
-                    if (self.dialog && self.dialog.dispose) {
-                        self.dialog.dispose();
+                    if (!self.dialog) {
+                        self.dialog = dialog(self.dialogOptions);
                     }
-                    self.dialog = dialog(self.dialogOptions);
                     self.dialog.title.innerHTML = self.title;
                     self.dialog.content.appendChild(self.form);
                     self.intf.appendChild(self.dialog);
@@ -614,7 +606,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         });
         Object.defineProperty(self.intf, 'dialog', {
             get: function () {
-                return self.dialog;
+                return self.dialog || { attached: false };
             }
         });
         Object.defineProperty(self.intf, 'schema', {
@@ -1021,7 +1013,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         intf.minWidth = 300;
         intf.minHeight = 27;
         // a rough area were bandit pixels hang out
-        self.borderZone = 5;
+        self.borderZone = 15;
         intf.attached = false;
         function resizeMouseHover(ev) {
             if (self.moving) { return; }
@@ -1210,9 +1202,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             intf.style.top = document.scrollingElement.scrollTop + 20 + 'px';
             window.addEventListener('resize', resize);
             intf.addEventListener('mousedown', beginDialogMove);
-            intf.addEventListener('mousemove', function (e) {
-                resizeMouseHover(e);
-            });
+            intf.addEventListener('mousemove', resizeMouseHover);
             // interface
             Object.defineProperty(intf, 'title', {
                 get: function () {
@@ -1267,7 +1257,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 },
                 set: function (value) {
                     self.stayCenteredHorizontally = !!value;
-                    self.resize();
+                    resize();
                 }
             });
             Object.defineProperty(intf, 'stayCenteredVertically', {
@@ -1276,7 +1266,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 },
                 set: function (value) {
                     self.stayCenteredVertically = !!value;
-                    self.resize();
+                    resize();
                 }
             });
             Object.defineProperty(intf, 'minimizable', {
