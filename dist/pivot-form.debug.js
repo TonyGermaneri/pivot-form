@@ -123,9 +123,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 value = value[e.header.name];
                 function setValue(n) {
                     var v = n === undefined ? '' : n;
-                    e.form.data[e.header.name] = v;
-                    if (e.form.preInitDataSet) {
-                        e.form.preInitDataSet[e.header.name] = v;
+                    e.pivotForm.data[e.header.name] = v;
+                    if (e.pivotForm.preInitDataSet) {
+                        e.pivotForm.preInitDataSet[e.header.name] = v;
                     }
                     if (e.input) {
                         e.input.value = v;
@@ -699,7 +699,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     // components that contain other components must be described here because
     // of the inherit circular reference to the components module
     function inputComponentFactory(inputOptions) {
-        return function (header, index, form) {
+        return function (header, index, pivotForm) {
             var component = util.createElement('span', null, {className: 'component input-type-' + inputOptions.type}),
                 label = util.createElement('span', component, {className: 'label'}),
                 input = util.createElement('input', component, inputOptions);
@@ -707,7 +707,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             component.header = header;
             component.label = label;
             component.input = input;
-            component.form = form;
+            component.pivotForm = pivotForm;
             util.addEvents(input, header.events);
             util.addEvents(label, header.labelEvents);
             util.addEvents(component, header.componentEvents);
@@ -718,7 +718,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             component.addEventListener = input.addEventListener;
             component.removeEventListener = input.removeEventListener;
             input.onchange = function () {
-                form.data[header.name] = input.value;
+                pivotForm.data[header.name] = input.value;
             };
             Object.defineProperty(component, 'value', {
                 get: function () {
@@ -730,13 +730,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         };
     }
     // html 4 input types
-    ['button', 'checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'reset', 'submit', 'text',
+    ['checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'reset', 'submit', 'text',
         // html 5 input types
         'color', 'date', 'datetime-local', 'email', 'month', 'number', 'range', 'search', 'tel', 'time',
         'url', 'week'].forEach(function (typeKey) {
         components[typeKey] = inputComponentFactory({className: 'input', type: typeKey});
     });
-    components.select = function (header, index, form) {
+    components.select = function (header, index, pivotForm) {
         var componentContext = this,
             component = util.createElement('span', null, {className: 'component'}),
             label = util.createElement('span', component, {className: 'label'}),
@@ -753,7 +753,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             });
         }
         label.innerHTML = header.title === undefined ? header.name : header.title;
-        component.form = form;
+        component.pivotForm = pivotForm;
         component.label = label;
         component.input = input;
         component.header = header;
@@ -777,7 +777,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             }
         }
         input.onchange = function () {
-            form.data[header.name] = input.value;
+            pivotForm.data[header.name] = input.value;
         };
         Object.defineProperty(component, 'value', {
             get: function () {
@@ -789,23 +789,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.removeEventListener = input.removeEventListener;
         return component;
     };
-    components.HTMLElement = function (header, index, form) {
-        return util.createElement(header.tagName, null, header);
+    components.HTMLElement = function (header, index, pivotForm) {
+        var component = util.createElement(header.tagName, null, header);
+        component.header = header;
+        component.pivotForm = pivotForm;
+        util.addEvents(component, header.componentEvents);
+        util.setProperties(component.style, header.componentStyle);
+        util.setProperties(component.containerStyle, header.containerStyle);
+        return component;
     };
     ['h1', 'h2', 'h3', 'h4', 'button', 'hr', 'pre',
         'label', 'div', 'p', 'span', 'i', 'a'].forEach(function (h) {
-        components[h] = function (header, index, form) {
-            var component = util.createElement(h, null, header);
-            component.header = header;
-            component.form = form;
-            util.addEvents(component, header.componentEvents);
-            util.setProperties(component.style, header.componentStyle);
-            util.setProperties(component.containerStyle, header.containerStyle);
-            return component;
+        components[h] = function (header, index, pivotForm) {
+            header.tagName = h;
+            return components.HTMLElement(header, index, pivotForm);
         };
     });
     components.string = components.text;
-    components['canvas-datagrid'] = function (header, index, form) {
+    components['canvas-datagrid'] = function (header, index, pivotForm) {
         var pContext = this,
             component = util.createElement('div', null, {className: 'canvas-datagrid-child'}),
             grid = window.canvasDatagrid();
@@ -818,7 +819,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         };
         component.input = grid;
         component.header = header;
-        component.form = form;
+        component.pivotForm = pivotForm;
         header.static = header.static === undefined ? true : header.static;
         component.appendChild(grid);
         Object.keys(header).forEach(function (propertyKey) {
@@ -835,8 +836,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         };
         function changeEvent() {
             // break circular refs
-            if (!form.data) { return; }
-            form.data[header.name] = util.jsonCopy(grid.data);
+            if (!pivotForm.data) { return; }
+            pivotForm.data[header.name] = util.jsonCopy(grid.data);
             component.dispatchEvent(new Event('change'));
         }
         grid.addEventListener('datachanged', changeEvent);
@@ -858,7 +859,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         return component;
     };
     // hierarchical components
-    components['pivot-form'] = function (header, index, form) {
+    components['pivot-form'] = function (header, index, pivotForm) {
         var pContext = this,
             component,
             name = pContext.name ? (pContext.name + '_pivot-form_' + index) : undefined;
@@ -867,9 +868,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.className = 'pivot-form-child';
         component.name = name;
         component.schema = header.schema;
-        component.data = form.data;
+        component.data = pivotForm.data;
         component.header = header;
-        component.form = form;
+        component.pivotForm = pivotForm;
         component.index = index;
         header.static = header.static === undefined ? true : header.static;
         util.setProperties(component.containerStyle, header.containerStyle);
@@ -885,7 +886,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         });
         return component;
     };
-    components.tabs = function (header, index, form) {
+    components.tabs = function (header, index, pivotForm) {
         var component = util.createElement('div', null, {className: 'tabbed-component'}),
             tabsContainer = util.createElement('div', component, {className: 'tabs'}),
             activeTabIndex,
@@ -898,7 +899,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.tabsContainer = tabsContainer;
         component.tabs = tabs;
         component.header = header;
-        component.form = form;
+        component.pivotForm = pivotForm;
         header.static = header.static === undefined ? true : header.static;
         function activateTab(tabIndex) {
             var activeTabItem = tabs[tabIndex];
@@ -916,7 +917,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             activeTabItem.tabElement.classList.remove('tab-inactive');
             activeTabItem.content.classList.add('tab-content-active');
             component.appendChild(activeTabItem.content);
-            activeTabItem.form.resize();
+            activeTabItem.pivotForm.resize();
         }
         header.tabs.forEach(function (tabHeader, index) {
             var tab = {};
@@ -931,23 +932,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 innerHTML: tabHeader.title || tabHeader.name
             });
             tab.content = util.createElement('div', null, { className: 'tab-content' });
-            tab.form = window.pivotForm();
-            tab.form.addEventListener('change', function () {
-                form.intf.dispatchEvent(new Event('change'));
+            tab.pivotForm = window.pivotForm();
+            tab.pivotForm.addEventListener('change', function () {
+                pivotForm.intf.dispatchEvent(new Event('change'));
             });
-            util.setProperties(tab.form, tabHeader);
+            util.setProperties(tab.pivotForm, tabHeader);
             util.setProperties(tab.tabElement, tabHeader.tabStyle);
             util.setProperties(tab.content, tabHeader.contentStyle);
             util.addEvents(tab.tabElement, tabHeader.tabEvents);
             util.addEvents(tab.content, tabHeader.contentEvents);
-            util.addEvents(tab.form, tabHeader.events);
-            tab.content.appendChild(tab.form);
+            util.addEvents(tab.pivotForm, tabHeader.events);
+            tab.content.appendChild(tab.pivotForm);
             tabs.push(tab);
         });
         component.getComponentsByPropertyValue = function getComponentsByPropertyValue(key, value) {
             var found = [];
             tabs.forEach(function (tab) {
-                found = found.concat(tab.form.getComponentsByPropertyValue(key, value));
+                found = found.concat(tab.pivotForm.getComponentsByPropertyValue(key, value));
             });
             return found;
         };
@@ -957,7 +958,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.getCompoentById = function getCompoentById(value) {
             return component.getComponentsByPropertyValue('id', value)[0];
         };
-        util.addEventInterface(component, header, index, form);
+        util.addEventInterface(component, header, index, pivotForm);
         util.addEvents(component, header.events);
         util.setProperties(component.style, header.componentStyle);
         util.setProperties(component.containerStyle, header.containerStyle);
@@ -979,13 +980,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             get: function () {
                 var d = {};
                 tabs.forEach(function (tab) {
-                    Object.assign(d, tab.form.data);
+                    Object.assign(d, tab.pivotForm.data);
                 });
                 return d;
             },
             set: function (value) {
                 tabs.forEach(function (tab) {
-                    tab.form.data = value;
+                    tab.pivotForm.data = value;
                 });
                 return;
             }
