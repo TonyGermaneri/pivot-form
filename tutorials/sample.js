@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var data, schema, form = window.pivotForm();
     form.name = 'blah';
     form.title = 'Taizo Sakai';
-    //p.mode = 'dialog';
+    form.mode = 'dialog';
+    form.dialog.modal = true;
     function week() {
         var d = [['a', 'b']];
         return d;
@@ -34,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         type: 'pivot-form',
                         schema: [
                             {
-                                static: true,
                                 name: 'week',
                                 type: 'select',
                                 enum: week,
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             },
                             {
-                                static: true,
                                 name: 'country',
                                 type: 'select',
                                 enum: ['US', 'UK'],
@@ -56,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             },
                             {
-                                static: true,
                                 name: 'searchResults',
                                 type: 'canvas-datagrid',
                                 value: refreshBoxOffice
@@ -65,15 +63,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 ]
             },
-            { name: 'Opening Movies' },
-            { name: 'RT Mapping' },
-            { name: 'Release Calendar' },
+            // { name: 'Opening Movies' },
+            // { name: 'RT Mapping' },
+            // { name: 'Release Calendar' },
         ]
     }];
     form.schema = schema;
-    form.data = data;
+    //form.data = data;
     document.body.appendChild(form);
     form.addEventListener('change', function () {
-        document.getElementById('data-sample').value = JSON.stringify(form.data);
+        document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
     });
 });
