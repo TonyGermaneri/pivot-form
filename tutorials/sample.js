@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var p = window.pivotForm();
     p.name = 'blah';
     p.title = 'Taizo Sakai';
-    p.mode = 'dialog';
+    //p.mode = 'dialog';
     var data = {col1: 'updated value', col2: 'updated value 2', col3: 2, col4: [{a: 'b', c: 'd'}]};
     var schema = [
         {
@@ -133,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
     p.schema = schema;
     p.data = data;
+    p.style.width = '50%';
+    p.style.display = 'inline-block';
     document.body.appendChild(p);
     p.addEventListener('change', function () {
         document.getElementById('data-sample').value = JSON.stringify(p.data);

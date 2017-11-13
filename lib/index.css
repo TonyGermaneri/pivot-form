@@ -11,6 +11,7 @@
     flex-direction: var(--pivot-form-flex-direction, row);
     flex-wrap: var(--pivot-form-flex-wrap, wrap);
     justify-content: var(--pivot-form-tab-content-justify-content, space-between);
+    width: var(--pivot-form-width, 100%);
 }
 .component-item {
     white-space: nowrap;
