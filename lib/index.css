@@ -137,6 +137,7 @@
 }
 .canvas-datagrid-child {
     width: var(--pivot-form-canvas-datagrid-width, 100%);
+    height: var(--pivot-form-canvas-datagrid-min-height, 175px);
 }
 .dialog {
     width: var(--pivot-form-dialog-width, 500px);
