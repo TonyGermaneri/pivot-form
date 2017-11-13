@@ -14,10 +14,15 @@
 }
 .component-item {
     white-space: nowrap;
+    display: var(--pivot-form-display, flex);
+    flex-direction: var(--pivot-form-flex-direction, row);
+    flex-wrap: var(--pivot-form-flex-wrap, wrap);
+    justify-content: var(--pivot-form-tab-content-justify-content, space-between);
     margin: var(--pivot-form-component-item-margin, 4px);
 }
 .label {
     min-width: var(--pivot-form-label-min-width, 100px);
+    max-width: var(--pivot-form-label-max-width, 150px);
     display: inline-block;
     font-family: var(--pivot-form-label-font-family, sans-serif);
     color: var(--pivot-form-label-color, #000);
@@ -25,12 +30,40 @@
 }
 .select {
     display: inline-block;
-    min-width: var(--pivot-form-input-min-width, 132px);
+    min-width: var(--pivot-form-select-min-width, 133px);
+    max-width: var(--pivot-form-select-max-width, 150px);
 }
 .input {
     display: inline-block;
     min-width: var(--pivot-form-input-min-width, 100px);
+    max-width: var(--pivot-form-input-max-width, 150px);
     font-size: var(--pivot-form-input-font-size, 12px);
+}
+.item-handle, .reorder-marker {
+    cursor: move;
+    display: inline-block;
+    width: 7px;
+    height: 19px;
+    min-width: 5px;
+    margin-right: 5px;
+    text-align: center;
+    color: var(--pivot-form-handle-color, #333);
+    background-color: var(--pivot-form-handle-background-color, #EEE);
+    border-radius: var(--pivot-form-handle-border-radius, 4px);
+    border-color: var(--pivot-form-handle-border-color, #CCC);
+    border-style: var(--pivot-form-handle-border-style, solid);
+    border-width: var(--pivot-form-handle-border-width, 1px);
+}
+.reorder-drag-over .item-handle:nth-child(1) {
+    background-color: var(--pivot-form-handle-drag-background-color, rgba(110, 168, 255, 1));
+}
+.reorder-marker {
+    color: var(--pivot-form-handle-reordering-marker-color, #333);
+    background: var(--pivot-form-handle-reordering-marker-color, #EEE);
+    height: var(--pivot-form-handle-reordering-marker-height, 23px);
+    width: var(--pivot-form-handle-reordering-marker-width, 10px);
+    position: absolute;
+    z-index: 10;
 }
 .tabbed-component {
     white-space: nowrap;
@@ -38,6 +71,7 @@
     margin-top: var(--pivot-form-tab-content-margin-top, 4px);
     margin-left: var(--pivot-form-tab-content-margin-left, 0);
     margin-right: var(--pivot-form-tab-content-margin-right, 0);
+    width: var(--pivot-form-tab-content-width, 100%);
 }
 .tabs {
     display: var(--pivot-form-tab-component-display, inline-flex);
@@ -99,32 +133,6 @@
 }
 .tab-content-active {
     display: block;
-}
-.item-handle, .reorder-marker {
-    cursor: move;
-    display: inline-block;
-    width: 7px;
-    height: 19px;
-    min-width: 5px;
-    margin-right: 5px;
-    text-align: center;
-    color: var(--pivot-form-handle-color, #333);
-    background-color: var(--pivot-form-handle-background-color, #EEE);
-    border-radius: var(--pivot-form-handle-border-radius, 4px);
-    border-color: var(--pivot-form-handle-border-color, #CCC);
-    border-style: var(--pivot-form-handle-border-style, solid);
-    border-width: var(--pivot-form-handle-border-width, 1px);
-}
-.reorder-drag-over .item-handle:nth-child(1) {
-    background-color: var(--pivot-form-handle-drag-background-color, rgba(110, 168, 255, 1));
-}
-.reorder-marker {
-    color: var(--pivot-form-handle-reordering-marker-color, #333);
-    background: var(--pivot-form-handle-reordering-marker-color, #EEE);
-    height: var(--pivot-form-handle-reordering-marker-height, 23px);
-    width: var(--pivot-form-handle-reordering-marker-width, 10px);
-    position: absolute;
-    z-index: 10;
 }
 .canvas-datagrid-child {
     width: var(--pivot-form-canvas-datagrid-width, 100%);

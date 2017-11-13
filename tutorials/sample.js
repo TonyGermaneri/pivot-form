@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     p.name = 'blah';
     p.title = 'Taizo Sakai';
     p.mode = 'dialog';
-    p.dialog.stayCenteredHorizontally = true;
     var data = {col1: 'updated value', col2: 'updated value 2', col3: 2, col4: [{a: 'b', c: 'd'}]};
     var schema = [
         {
