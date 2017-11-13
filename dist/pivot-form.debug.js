@@ -795,7 +795,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     ['h1', 'h2', 'h3', 'h4', 'button', 'hr', 'pre',
         'label', 'div', 'p', 'span', 'i', 'a'].forEach(function (h) {
         components[h] = function (header, index, form) {
-            return util.createElement(h, null, header);
+            var component = util.createElement(h, null, header);
+            component.header = header;
+            component.form = form;
+            util.addEvents(component, header.componentEvents);
+            util.setProperties(component.style, header.componentStyle);
+            util.setProperties(component.containerStyle, header.containerStyle);
+            return component;
         };
     });
     components.string = components.text;
