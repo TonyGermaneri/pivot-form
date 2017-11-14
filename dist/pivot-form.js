@@ -352,6 +352,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                             intf.data = f;
                         }
                         // notify that everything has been initialized on this form
+                        intf.classList.remove('loading');
                         intf.dispatchEvent(new Event('initialized'));
                     }
                 }
@@ -371,7 +372,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 util.setProperties(handle, component.handleStyle);
                 self.form.appendChild(container);
                 self.inputComponentOrganicOrder.push(container);
+                // a value was defined in the schema as a default
+                // assume this is an async function and delay loading of data via data setter
+                // by adding items to intf.initializingComponents
                 if (!component.initialzied && component.header.name && component.header.value) {
+                    intf.classList.remove('loading');
                     dataStub[component.header.name] = component.header.value;
                     intf.initializingComponents[component.id] = component;
                     component.addEventListener('initialized', initialized);
@@ -445,7 +450,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     if (intf.pivotForm) {
                         intf.pivotForm.data = cData;
                     } else {
-                        initData(cData);
+                        intf.data = cData;
                     }
                     // dispatch the change event to our listeners
                     intf.dispatchEvent(new Event('change'));
@@ -546,7 +551,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function init() {
             if (intf.initialized) { return; }
             self.shadowRoot = intf.attachShadow ? intf.attachShadow({mode: 'open'}) : intf;
-            self.shadowRoot.appendChild(self.form);
             if (!self.cssAttached) {
                 util.createElement('link', self.shadowRoot, {
                     rel: 'stylesheet',
@@ -554,7 +558,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 });
                 self.cssAttached = true;
             }
-            self.shadowRoot.appendChild(self.form);
             if (intf.mode === 'dialog') {
                 self.dialogOptions.title = intf.title;
                 if (!self.dialog) {
@@ -564,12 +567,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 self.dialog.content.appendChild(self.form);
                 self.shadowRoot.appendChild(self.dialog);
                 self.dialog.attached = true;
+            } else {
+                self.shadowRoot.appendChild(self.form);
             }
             intf.form = self.form;
             intf.initialized = true;
             loadState();
             if (self.dialog) {
-                self.dialog.centerHorizontally();
+                setTimeout(function () { self.dialog.centerHorizontally(); }, 1);
             }
         }
         function dataSetter(value) {
@@ -620,16 +625,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         intf.getComponentById = getComponentById;
         intf.getComponentsByPropertyValue = getComponentsByPropertyValue;
         intf.resize = resize;
-        // Object.defineProperty(intf, 'initialized', {
-        //     get: function () { return intf.pivotForm ? intf.pivotForm.initialized : self.initialized; },
-        //     set: function (value) {
-        //         if (intf.pivotForm) {
-        //             intf.pivotForm.initialized = !!value;
-        //             return;
-        //         }
-        //         self.initialized = !!value;
-        //     }
-        // });
         Object.defineProperty(intf, 'isContainer', {
             get: function () { return true; }
         });
@@ -662,6 +657,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 } else {
                     self.mode = 'block';
                 }
+                if (!self.initialized) { return; }
                 if (self.mode === 'dialog') {
                     if (!self.dialog) {
                         self.dialog = dialog(self.dialogOptions);
@@ -722,7 +718,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         });
         Object.defineProperty(intf, 'stylesheet', {
             get: function () {
-                return self.userStyleSheet;
+                return self.userStyleSheet.originalValue;
             },
             set: function (value) {
                 if (self.userStyleSheet && self.userStyleSheet.parentNode) {
@@ -730,8 +726,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 }
                 self.userStyleSheet = util.createElement('link');
                 self.userStyleSheet.rel = 'stylesheet';
-                self.userStyleSheet.src = value;
-                self.shadowRoot.appendChild(self.userStyleSheet);
+                self.userStyleSheet.type = 'text/css';
+                self.userStyleSheet.href = value;
+                self.userStyleSheet.originalValue = value;
+                self.form.appendChild(self.userStyleSheet);
+                intf.dispatchEvent(new Event('stylesheetchanged'));
             }
         });
         initSchema();
@@ -940,6 +939,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.name = name;
         component.schema = header.schema;
         component.pivotForm = pivotForm;
+        pivotForm.addEventListener('stylesheetchanged', function () {
+            component.stylesheet = pivotForm.stylesheet;
+        });
         component.index = index;
         header.static = header.static === undefined ? true : header.static;
         util.setProperties(component.style, header.style);
@@ -980,9 +982,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 tab.tabElement.classList.remove('tab-active');
                 tab.content.classList.remove('tab-content-active');
                 if (tab.content.parentNode) {
-                    requestAnimationFrame(function () {
-                        tab.content.parentNode.removeChild(tab.content);
-                    });
+                    tab.content.parentNode.removeChild(tab.content);
                     component.dispatchEvent(ev);
                 }
             });
