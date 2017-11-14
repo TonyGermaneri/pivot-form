@@ -1,75 +1,70 @@
 /*jslint browser: true*/
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
-    var data, schema, form = window.pivotForm();
-    form.name = 'blah';
-    form.title = 'Taizo Sakai';
+    var tabSchema, data, schema, form = window.pivotForm();
     form.mode = 'dialog';
-    form.dialog.modal = true;
-    function week() {
-        var d = [['a', 'b']];
-        return d;
-    }
-    function refreshBoxOffice(callback) {
-        console.log(form.data.week, form.data.country);
-        setTimeout(function () {
-            callback([{a: 'data'}]);
-        }, 500);
-    }
-    function boxOfficeSearchFormChange() {
-        document.body.style.cursor = 'wait';
-        refreshBoxOffice(function (data) {
-            form.data = {searchResults: data};
-            document.body.style.cursor = 'auto';
-        });
-    }
-    data = {col1: 'updated value', col2: 'updated value 2', col3: 2, col4: [{a: 'b', c: 'd'}]};
-    schema = [{
-        type: 'tabs',
-        static: true,
-        tabs: [
-            {
-                name: 'Top Box Office',
-                schema: [
-                    {
-                        type: 'pivot-form',
-                        schema: [
-                            {
-                                name: 'week',
-                                type: 'select',
-                                enum: week,
-                                value: function () {
-                                    return week()[0][0];
-                                },
-                                events: {
-                                    change: boxOfficeSearchFormChange
-                                }
-                            },
-                            {
-                                name: 'country',
-                                type: 'select',
-                                enum: ['US', 'UK'],
-                                value: 'US',
-                                events: {
-                                    change: boxOfficeSearchFormChange
-                                }
-                            },
-                            {
-                                name: 'searchResults',
-                                type: 'canvas-datagrid',
-                                value: refreshBoxOffice
-                            }
-                        ]
-                    }
-                ]
+    schema = [
+        {
+            name: 'test1'
+        },
+        {
+            name: 'test1'
+        },
+        {
+            name: 'test5',
+            value: function (callback) {
+                setTimeout(function () {
+                    callback('initial async value');
+                }, 1000);
+            }
+        },
+        {
+            name: 'test2',
+            className: 'blah',
+            labelStyle: {
+                color: 'green'
             },
-            // { name: 'Opening Movies' },
-            // { name: 'RT Mapping' },
-            // { name: 'Release Calendar' },
-        ]
-    }];
-    form.schema = schema;
-    //form.data = data;
+            style: {
+                backgroundColor: 'red'
+            },
+            events: {
+                keyup: function () {
+                    form.data.test1 = '12345';
+                }
+            },
+            value: function (callback) {
+                setTimeout(function () {
+                    callback('initial async value');
+                }, 1000);
+            }
+        },
+        {
+            name: 'sample',
+            type: 'canvas-datagrid',
+            data: [{blah: 'blah'}]
+        }
+    ];
+    tabSchema = [
+        {
+            type: 'tabs',
+            tabs: [
+                {
+                    name: 'tab1',
+                    schema: schema
+                },
+                {
+                    name: 'tab1',
+                    schema: schema.concat([{
+                        name: 'test3'
+                    }])
+                }
+            ]
+        }
+    ];
+    form.schema = tabSchema;
+    data = {test2: 'NEW VALUE', test3: 'test'};
+    form.data = data;
+    form.styleSheet = 'sample.css';
     document.body.appendChild(form);
     form.addEventListener('change', function () {
         document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
