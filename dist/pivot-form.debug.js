@@ -1038,9 +1038,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         // instantiate each tab
         header.tabs.forEach(function (tabName, index) {
             if (defaultTab === index) { return; }
-            activateTab(index);
+            requestAnimationFrame(function () { activateTab(index); });
         });
-        activateTab(defaultTab || 0);
+        requestAnimationFrame(function () { activateTab(defaultTab || 0); });
         Object.defineProperty(component, 'tabIndex', {
             get: function () {
                 return activeTabIndex;

@@ -8,7 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
             name: 'test1'
         },
         {
-            name: 'test1'
+            name: 'test1',
+            value: function (callback) {
+                setTimeout(function () {
+                    callback('initial test 1 value');
+                }, 500);
+            }
         },
         {
             name: 'test5',
@@ -34,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             value: function (callback) {
                 setTimeout(function () {
-                    callback('initial async value');
+                    callback('test 1' + form.data.test1);
                 }, 1000);
             }
         },
@@ -62,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
     form.schema = tabSchema;
-    data = {test2: 'NEW VALUE', test3: 'test'};
-    form.data = data;
+    data = {test2: 'NEW VALUE', test4: 'test'};
+    form.data.test2 = 'NEW VALUE';
     form.styleSheet = 'sample.css';
     document.body.appendChild(form);
     form.addEventListener('change', function () {
