@@ -69,9 +69,9 @@ document.addEventListener('DOMContentLoaded', function () {
     form.schema = tabSchema;
     data = {test2: 'NEW VALUE', test4: 'test'};
     form.data.test2 = 'NEW VALUE';
-    form.styleSheet = 'sample.css';
-    document.body.appendChild(form);
+    form.stylesheet = './sample.css';
     form.addEventListener('change', function () {
         document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
     });
+    document.body.appendChild(form);
 });
