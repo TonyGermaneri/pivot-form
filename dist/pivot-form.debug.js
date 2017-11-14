@@ -197,15 +197,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         self.title = '';
         self.componentOrder = [];
         self.components = [];
+        self.preInitDataSet = {};
         self.idCounter = -1;
         self.data = {};
-        self.initializingComponents = [];
+        self.initializingComponents = {};
         self.dialogOptions = {};
         intf = window.customElements ? eval('Reflect.construct(HTMLElement, [], new.target)')
             : util.createElement('section');
         function getNewId() {
             self.idCounter += 1;
-            return self.idCounter.toString(36);
+            return 'p' + Math.floor((Math.random() * Math.pow(2, 30))).toString(36);
         }
         function getComponentsByPropertyValue(key, value) {
             var found = [];
@@ -244,7 +245,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             saveState();
         }
         function loadState() {
-            if (self.name && self.initialized) {
+            if (self.name && intf.initialized) {
                 try {
                     var d = localStorage.getItem('pivot-form-order-' + self.name);
                     d = self.componentOrder = JSON.parse(d).componentOrder;
@@ -340,12 +341,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 }
                 function initialized() {
                     component.removeEventListener('initialized', initialized);
-                    delete self.initializingComponents[organicComponentIndex];
-                    if (self.initializingComponents.filter(function (i) { return !!i; })
-                            .length === 0 && self.preInitDataSet) {
-                        var f = self.preInitDataSet;
+                    delete intf.initializingComponents[component.id];
+                    if (Object.keys(intf.initializingComponents).length === 0 && intf.preInitDataSet) {
+                        var f = intf.preInitDataSet;
+                        // delete from this form, deletes will propagate up
                         delete self.preInitDataSet;
-                        intf.data = f;
+                        if (intf.pivotForm) {
+                            intf.pivotForm.data = f;
+                        } else {
+                            intf.data = f;
+                        }
+                        // notify that everything has been initialized on this form
+                        intf.dispatchEvent(new Event('initialized'));
                     }
                 }
                 component.container = container;
@@ -366,7 +373,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 self.inputComponentOrganicOrder.push(container);
                 if (!component.initialzied && component.header.name && component.header.value) {
                     dataStub[component.header.name] = component.header.value;
-                    self.initializingComponents[organicComponentIndex] = component;
+                    intf.initializingComponents[component.id] = component;
                     component.addEventListener('initialized', initialized);
                     component.value = dataStub;
                 }
@@ -374,11 +381,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             updateFlexOrder();
         }
         function initData(newData) {
-            if (!newData && self.preInitDataSet && self.initialized) {
-                newData = self.preInitDataSet;
+            if (!newData && intf.preInitDataSet && intf.initialized) {
+                newData = intf.preInitDataSet;
                 self.data = newData;
-            } else if (!self.initialized || self.initializingComponents.filter(function (i) { return !!i; }).length > 0) {
-                self.preInitDataSet = newData;
+            } else if (!intf.initialized || Object.keys(intf.initializingComponents).length > 0) {
+                if (newData && typeof newData === 'object' && Object.keys(newData).length > 0) {
+                    intf.preInitDataSet = newData;
+                }
                 return;
             }
             if (!newData) {
@@ -411,31 +420,37 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             disposeComponents();
         }
         function initSchema() {
-            if (!self.initialized) { return; }
             if (!self.schema) { return; }
             if (self.components) {
                 // dispose previous items
                 disposeComponents();
             }
+            self.inputComponentOrganicOrder = [];
             self.idCounter = -1;
             self.components = [];
             self.schema.forEach(function (header, index) {
                 var t = PivotForm.prototype.components.string,
-                    id = header.name === undefined ? getNewId() : header.name,
+                    id = getNewId(),
                     component;
-                if (getComponentById(id)) {
-                    throw new Error('Duplicate id in schema ' + id);
-                }
                 if (PivotForm.prototype.components[header.type]) {
                     t = PivotForm.prototype.components[header.type];
                 }
                 // instantiate component
                 component = t.apply(intf, [header, index, intf]);
                 // listen to the component's change event
-                component.addEventListener('change', function () {
+                function change() {
+                    var cData = {};
+                    // set the new value of the element to data
+                    cData[header.name] = component.input.value;
+                    if (intf.pivotForm) {
+                        intf.pivotForm.data = cData;
+                    } else {
+                        initData(cData);
+                    }
                     // dispatch the change event to our listeners
                     intf.dispatchEvent(new Event('change'));
-                });
+                }
+                component.addEventListener('change', change);
                 // if the component does not define the property value, define it
                 if (!component.hasOwnProperty('value')) {
                     Object.defineProperty(component, 'value', {
@@ -460,10 +475,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                                 var v = n === undefined ? '' : n;
                                 // set the value of the form
                                 self.data[header.name] = v;
-                                // not sure if this should be here, might have to ditch it
-                                if (self.preInitDataSet) {
-                                    self.preInitDataSet[header.name] = v;
-                                }
                                 // if the component has a value to update, update it now
                                 if (component.input) {
                                     component.input.value = v;
@@ -516,7 +527,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 util.setProperties(component.style, header.componentStyle);
                 util.setProperties(component.containerStyle, header.containerStyle);
                 component.header = header;
-                component.pivotForm = self;
+                component.pivotForm = intf.pivotForm || intf;
                 component.name = component.name || (header.name === undefined ? '__' + id : header.name);
                 component.id = id;
                 component.index = index;
@@ -533,10 +544,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             });
         }
         function init() {
-            if (self.initialized) { return; }
+            if (intf.initialized) { return; }
             self.shadowRoot = intf.attachShadow ? intf.attachShadow({mode: 'open'}) : intf;
             self.shadowRoot.appendChild(self.form);
-            self.inputComponentOrganicOrder = [];
             if (!self.cssAttached) {
                 util.createElement('link', self.shadowRoot, {
                     rel: 'stylesheet',
@@ -556,9 +566,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 self.dialog.attached = true;
             }
             intf.form = self.form;
-            self.initialized = true;
+            intf.initialized = true;
             loadState();
-            initSchema();
             if (self.dialog) {
                 self.dialog.centerHorizontally();
             }
@@ -571,8 +580,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             initData(value);
         }
         function dataGetter() {
-            var d = self.data || {};
-            self.components.forEach(function (component) {
+            var d = {};
+            self.components.forEach(function getComponentValue(component) {
                 var cValue = {};
                 if (component.isContainer) {
                     Object.assign(d, component.value);
@@ -580,6 +589,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     cValue[component.header.name] = component.value;
                     Object.assign(d, cValue);
                 }
+            });
+            // create getter setters for each key returned from data
+            // so data can be set into it
+            Object.keys(d).forEach(function (dataKey) {
+                // prevent stack overflows by getting data ref prior to defineProperty
+                var getValue = d[dataKey];
+                Object.defineProperty(d, dataKey, {
+                    get: function () {
+                        return getValue;
+                    },
+                    set: function (value) {
+                        var cData = {};
+                        cData[dataKey] = value;
+                        dataSetter(cData);
+                        return;
+                    }
+                });
             });
             return d;
         }
@@ -594,6 +620,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         intf.getComponentById = getComponentById;
         intf.getComponentsByPropertyValue = getComponentsByPropertyValue;
         intf.resize = resize;
+        // Object.defineProperty(intf, 'initialized', {
+        //     get: function () { return intf.pivotForm ? intf.pivotForm.initialized : self.initialized; },
+        //     set: function (value) {
+        //         if (intf.pivotForm) {
+        //             intf.pivotForm.initialized = !!value;
+        //             return;
+        //         }
+        //         self.initialized = !!value;
+        //     }
+        // });
         Object.defineProperty(intf, 'isContainer', {
             get: function () { return true; }
         });
@@ -602,14 +638,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 return self.components;
             }
         });
-        Object.defineProperty(intf, 'isValid', {
-            get: function () {
-                return false;
-            }
-        });
         Object.defineProperty(intf, 'preInitDataSet', {
             get: function () {
-                return self.preInitDataSet;
+                var p = intf.pivotForm ? intf.pivotForm.preInitDataSet : self.preInitDataSet;
+                return p;
+            },
+            set: function (value) {
+                var p = intf.pivotForm ? intf.pivotForm.preInitDataSet : self.preInitDataSet;
+                Object.assign(p, value);
             }
         });
         Object.defineProperty(intf, 'data', {
@@ -645,6 +681,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 }
             }
         });
+        Object.defineProperty(intf, 'initializingComponents', {
+            get: function () {
+                if (intf.pivotForm) {
+                    return intf.pivotForm.initializingComponents;
+                }
+                return self.initializingComponents;
+            }
+        });
         Object.defineProperty(intf, 'title', {
             get: function () {
                 return self.title;
@@ -676,6 +720,21 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 loadState();
             }
         });
+        Object.defineProperty(intf, 'stylesheet', {
+            get: function () {
+                return self.userStyleSheet;
+            },
+            set: function (value) {
+                if (self.userStyleSheet && self.userStyleSheet.parentNode) {
+                    self.userStyleSheet.parentNode.removeChild(self.userStyleSheet);
+                }
+                self.userStyleSheet = util.createElement('link');
+                self.userStyleSheet.rel = 'stylesheet';
+                self.userStyleSheet.src = value;
+                self.shadowRoot.appendChild(self.userStyleSheet);
+            }
+        });
+        initSchema();
         return intf;
     }
     function connectedCallback(el) {
@@ -824,11 +883,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     });
     components.string = components.text;
     components['canvas-datagrid'] = function (header, index, pivotForm) {
-        var pContext = this,
-            component = util.createElement('div', null, {className: 'canvas-datagrid-child'}),
-            grid = window.canvasDatagrid();
+        var pContext, component, grid, importScript;
+        if (!window.canvasDatagrid) {
+            importScript = util.createElement('script', null);
+            importScript.src = header.src || 'https://unpkg.com/canvas-datagrid';
+            importScript.type = 'text/javascript';
+            importScript.async = false;
+            document.getElementsByTagName('head')[0].appendChild(importScript);
+        }
+        pContext = this;
+        component = util.createElement('div', null, {className: 'canvas-datagrid-child'});
+        grid = window.canvasDatagrid();
         component.containerStyle = {
-            width: '100%'
+            width: '100%',
+            height: '100%'
         };
         component.input = grid;
         header.static = header.static === undefined ? true : header.static;
@@ -871,7 +939,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.className = 'pivot-form-child';
         component.name = name;
         component.schema = header.schema;
-        component.data = pivotForm.data;
+        component.pivotForm = pivotForm;
         component.index = index;
         header.static = header.static === undefined ? true : header.static;
         util.setProperties(component.style, header.style);
@@ -900,15 +968,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.tabs = tabs;
         header.static = header.static === undefined ? true : header.static;
         function activateTab(tabIndex) {
-            var activeTabItem = tabs[tabIndex];
+            var activeTabItem = tabs[tabIndex],
+                e = new Event('activatetab');
+            e.tab = activeTabItem;
             if (!activeTabItem) { return; }
             activeTabIndex = tabIndex;
             tabs.forEach(function (tab) {
+                var ev = new Event('deactivatetab');
+                ev.tab = tab;
                 tab.tabElement.classList.add('tab-inactive');
                 tab.tabElement.classList.remove('tab-active');
                 tab.content.classList.remove('tab-content-active');
                 if (tab.content.parentNode) {
-                    tab.content.parentNode.removeChild(tab.content);
+                    requestAnimationFrame(function () {
+                        tab.content.parentNode.removeChild(tab.content);
+                    });
+                    component.dispatchEvent(ev);
                 }
             });
             activeTabItem.tabElement.classList.add('tab-active');
@@ -916,6 +991,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             activeTabItem.content.classList.add('tab-content-active');
             component.appendChild(activeTabItem.content);
             activeTabItem.pivotForm.resize();
+            component.dispatchEvent(e);
         }
         header.tabs.forEach(function (tabHeader, index) {
             var tab = {};
@@ -959,6 +1035,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         util.addEventInterface(component, header, index, pivotForm);
         util.addEvents(component, header.events);
         util.setProperties(component.containerStyle, header.containerStyle);
+        // instantiate each tab
         header.tabs.forEach(function (tabName, index) {
             if (defaultTab === index) { return; }
             activateTab(index);
