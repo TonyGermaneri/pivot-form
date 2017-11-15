@@ -590,15 +590,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         }
         function dataGetter() {
             var d = {};
-            self.components.forEach(function getComponentValue(component) {
-                var cValue = {};
-                if (component.isContainer) {
-                    Object.assign(d, component.value);
-                } else {
-                    cValue[component.header.name] = component.value;
-                    Object.assign(d, cValue);
-                }
-            });
+            // if the form hasn't finished initializing, give the user what we have thus far instead
+            // of querying uninitialized components, overriding initial data with data set via data setter
+            // in preInitDataSet
+            if (self.components.length === 0) {
+                d = util.jsonCopy(Object.assign(intf.data, intf.preInitDataSet));
+            } else {
+                self.components.forEach(function getComponentValue(component) {
+                    var cValue = {};
+                    if (component.isContainer) {
+                        Object.assign(d, component.value);
+                    } else {
+                        cValue[component.header.name] = component.value;
+                        Object.assign(d, cValue);
+                    }
+                });
+            }
             // create getter setters for each key returned from data
             // so data can be set into it
             Object.keys(d).forEach(function (dataKey) {
@@ -731,6 +738,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 if (self.userStyleSheet && self.userStyleSheet.parentNode) {
                     self.userStyleSheet.parentNode.removeChild(self.userStyleSheet);
                 }
+                if (!value) { return; }
                 self.userStyleSheet = util.createElement('link');
                 self.userStyleSheet.rel = 'stylesheet';
                 self.userStyleSheet.type = 'text/css';
@@ -918,9 +926,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             setTimeout(function () { grid.resize(true); }, 10);
         };
         function changeEvent() {
-            // break circular refs
             if (!pivotForm.data) { return; }
-            //pivotForm.data[header.name] = util.jsonCopy(grid.data);
             pivotForm.dispatchEvent(new Event('change'));
         }
         grid.addEventListener('datachanged', changeEvent);
@@ -949,7 +955,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         pivotForm.addEventListener('stylesheetchanged', function () {
             component.stylesheet = pivotForm.stylesheet;
         });
-        component.stylesheet = pivotForm.stylesheet;
+        if (pivotForm.stylesheet) {
+            component.stylesheet = pivotForm.stylesheet;
+        }
         component.index = index;
         header.static = header.static === undefined ? true : header.static;
         util.setProperties(component.style, header.style);
