@@ -6,6 +6,9 @@
     -ms-user-select: none;
     user-select: none;
 }
+.loading {
+    cursor: wait;
+}
 .pivot-form {
     display: var(--pivot-form-display, flex);
     flex-direction: var(--pivot-form-flex-direction, row);

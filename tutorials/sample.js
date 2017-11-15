@@ -3,70 +3,54 @@ document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var tabSchema, data, schema, form = window.pivotForm();
     form.mode = 'dialog';
+    function weeksArray() {
+        return [['a', 'a'], ['b', 'b']];
+    }
+    function refreshBoxOffice(callback) {
+        var gridData = [{week: form.data.week, country: form.data.country}];
+        callback(gridData);
+    }
+    function boxOfficeSearchFormChange() {
+        refreshBoxOffice(function (data) {
+            form.data.searchResults = data;
+        });
+    }
     schema = [
         {
-            name: 'test1'
-        },
-        {
-            name: 'test1'
-        },
-        {
-            name: 'test5',
-            value: function (callback) {
-                setTimeout(function () {
-                    callback('initial async value');
-                }, 1000);
-            }
-        },
-        {
-            name: 'test2',
-            className: 'blah',
-            labelStyle: {
-                color: 'green'
-            },
-            style: {
-                backgroundColor: 'red'
+            static: true,
+            name: 'week',
+            type: 'select',
+            enum: weeksArray,
+            value: function () {
+                return weeksArray()[0][0];
             },
             events: {
-                keyup: function () {
-                    form.data.test1 = '12345';
-                }
-            },
-            value: function (callback) {
-                setTimeout(function () {
-                    callback('initial async value');
-                }, 1000);
+                change: boxOfficeSearchFormChange
             }
         },
         {
-            name: 'sample',
-            type: 'canvas-datagrid',
-            data: [{blah: 'blah'}]
-        }
-    ];
-    tabSchema = [
+            static: true,
+            name: 'country',
+            type: 'select',
+            enum: ['US', 'UK'],
+            value: 'US',
+            events: {
+                change: boxOfficeSearchFormChange
+            }
+        },
         {
-            type: 'tabs',
-            tabs: [
-                {
-                    name: 'tab1',
-                    schema: schema
-                },
-                {
-                    name: 'tab1',
-                    schema: schema.concat([{
-                        name: 'test3'
-                    }])
-                }
-            ]
+            static: true,
+            name: 'searchResults',
+            type: 'canvas-datagrid',
+            value: refreshBoxOffice
         }
     ];
-    form.schema = tabSchema;
-    data = {test2: 'NEW VALUE', test3: 'test'};
-    form.data = data;
-    form.styleSheet = 'sample.css';
-    document.body.appendChild(form);
+    form.schema = schema;
+    //data = {test2: 'NEW VALUE', test4: 'test'};
+    form.data.test2 = 'NEW VALUE';
+    form.stylesheet = './sample.css';
     form.addEventListener('change', function () {
         document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
     });
+    document.body.appendChild(form);
 });
