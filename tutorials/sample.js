@@ -2,53 +2,87 @@
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var tabSchema, data, schema, form = window.pivotForm();
+    form.name = 'sample-root';
     form.mode = 'dialog';
     function weeksArray() {
         return [['a', 'a'], ['b', 'b']];
     }
     function refreshBoxOffice(callback) {
-        var gridData = [{week: form.data.week, country: form.data.country}];
-        callback(gridData);
+        console.log(form.data.week0);
+        var gridData = [{
+            week: form.data.week0
+        }];
+        setTimeout(function () {
+            callback(gridData);
+        }, 1000);
     }
     function boxOfficeSearchFormChange() {
         refreshBoxOffice(function (data) {
-            form.data.searchResults = data;
+            form.data.searchResults0 = data;
         });
     }
-    schema = [
-        {
-            static: true,
-            name: 'week',
-            type: 'select',
-            enum: weeksArray,
-            value: function () {
-                return weeksArray()[0][0];
+    function topBoxOffice(form) {
+        return [
+            {
+                static: true,
+                name: 'week0',
+                type: 'select',
+                enum: weeksArray,
+                value: function () {
+                    return weeksArray()[0][0];
+                },
+                events: {
+                    change: boxOfficeSearchFormChange
+                }
             },
-            events: {
-                change: boxOfficeSearchFormChange
+            {
+                static: true,
+                name: 'week0',
+                title: 'blah',
+                type: 'select',
+                enum: weeksArray,
+                value: function () {
+                    return weeksArray()[0][0];
+                },
+                events: {
+                    change: boxOfficeSearchFormChange
+                }
+            },
+            {
+                static: true,
+                name: 'country0',
+                type: 'select',
+                enum: ['US', 'UK'],
+                value: 'US',
+                events: {
+                    change: boxOfficeSearchFormChange
+                }
+            },
+            {
+                static: true,
+                name: 'searchResults0',
+                type: 'canvas-datagrid',
+                value: refreshBoxOffice
             }
-        },
-        {
-            static: true,
-            name: 'country',
-            type: 'select',
-            enum: ['US', 'UK'],
-            value: 'US',
-            events: {
-                change: boxOfficeSearchFormChange
+        ];
+    }
+    schema = [{
+        type: 'tabs',
+        static: true,
+        tabs: [
+            {
+                name: 'Top Box Office',
+                schema: topBoxOffice(form)
             }
-        },
-        {
-            static: true,
-            name: 'searchResults',
-            type: 'canvas-datagrid',
-            value: refreshBoxOffice
-        }
-    ];
+        ]
+    }];
     form.schema = schema;
     //data = {test2: 'NEW VALUE', test4: 'test'};
-    form.data.test2 = 'NEW VALUE';
+//    form.data.test2 = 'NEW VALUE';
     form.stylesheet = './sample.css';
+    form.addEventListener('initialized', function () {
+        document.getElementById('data-sample').style.backgroundColor = 'lightGreen';
+    });
     form.addEventListener('change', function () {
         document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
     });
