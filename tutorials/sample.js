@@ -3,32 +3,49 @@ document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var tabSchema, data, schema, form = window.pivotForm();
     form.mode = 'dialog';
+    function weeksArray() {
+        return [['a', 'a'], ['b', 'b']];
+    }
+    function refreshBoxOffice(callback) {
+        var gridData = [{week: form.data.week, country: form.data.country}];
+        callback(gridData);
+    }
+    function boxOfficeSearchFormChange() {
+        refreshBoxOffice(function (data) {
+            form.data.searchResults = data;
+        });
+    }
     schema = [
         {
-            name: 'test2',
-            value: function (callback) {
-                callback('test 1' + form.data.test1);
+            static: true,
+            name: 'week',
+            type: 'select',
+            enum: weeksArray,
+            value: function () {
+                return weeksArray()[0][0];
+            },
+            events: {
+                change: boxOfficeSearchFormChange
             }
         },
         {
-            name: 'test1',
-            value: function () {
-                return 'blah';
+            static: true,
+            name: 'country',
+            type: 'select',
+            enum: ['US', 'UK'],
+            value: 'US',
+            events: {
+                change: boxOfficeSearchFormChange
             }
-        }
-    ];
-    tabSchema = [
+        },
         {
-            type: 'tabs',
-            tabs: [
-                {
-                    name: 'tab1',
-                    schema: schema
-                }
-            ]
+            static: true,
+            name: 'searchResults',
+            type: 'canvas-datagrid',
+            value: refreshBoxOffice
         }
     ];
-    form.schema = tabSchema;
+    form.schema = schema;
     //data = {test2: 'NEW VALUE', test4: 'test'};
     form.data.test2 = 'NEW VALUE';
     form.stylesheet = './sample.css';
