@@ -77,8 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     }];
     form.schema = schema;
-    //data = {test2: 'NEW VALUE', test4: 'test'};
-//    form.data.test2 = 'NEW VALUE';
+    data = {country0: 'UK'};
+    // form.data.country0 = 'UK';
+    form.data = data;
     form.stylesheet = './sample.css';
     form.addEventListener('initialized', function () {
         document.getElementById('data-sample').style.backgroundColor = 'lightGreen';

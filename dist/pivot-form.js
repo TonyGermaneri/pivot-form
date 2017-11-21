@@ -118,7 +118,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             };
         },
         setProperties: function (root, props) {
-            if (typeof props !== 'object' || props === null) { return; }
+            if (typeof props !== 'object' || props === null || !root) { return; }
             Object.keys(props).forEach(function (keyName) {
                 root[keyName] = props[keyName];
             });
@@ -232,6 +232,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             return getComponentsByPropertyValue('id', value)[0];
         }
         function setPreInitData() {
+            if (!self.initialized) { return; }
             if (Object.keys(self.preInitData).length > 0) {
                 intf.data = self.preInitData;
             }
@@ -540,7 +541,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     });
                 }
                 util.setProperties(component.style, header.componentStyle);
-                util.setProperties(component.containerStyle, header.containerStyle);
+                if (component.container) {
+                    util.setProperties(component.container.style, header.containerStyle);
+                }
             });
             createDom();
         }
@@ -588,6 +591,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         function dataSetter(value) {
             if (!self.initialized) {
                 Object.assign(self.preInitData, value);
+                self.childForms.forEach(function (form) {
+                    form.data = value;
+                });
                 return;
             }
             initData(value);
