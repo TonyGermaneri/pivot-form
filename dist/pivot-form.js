@@ -541,9 +541,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     });
                 }
                 util.setProperties(component.style, header.componentStyle);
-                if (component.container) {
-                    util.setProperties(component.container.style, header.containerStyle);
-                }
             });
             createDom();
         }
@@ -849,6 +846,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             util.addEvents(label, header.labelEvents);
             util.setProperties(input.style, header.style);
             util.setProperties(label.style, header.labelStyle);
+            util.setProperties(component.containerStyle, header.containerStyle);
             component.addEventListener = input.addEventListener;
             component.removeEventListener = input.removeEventListener;
             return component;
@@ -885,6 +883,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         util.addEvents(label, header.labelEvents);
         util.setProperties(input.style, header.style);
         util.setProperties(label.style, header.labelStyle);
+        util.setProperties(component.containerStyle, header.containerStyle);
         if (Array.isArray(header.enum)) {
             fillOptions(header.enum);
         } else if (typeof header.enum === 'function') {
@@ -938,6 +937,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             grid[propertyKey] = header[propertyKey];
         });
         util.setProperties(grid, header);
+        util.setProperties(component.containerStyle, header.containerStyle);
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
         util.addEvents(grid, header.events);
         util.addEvents(component, header.componentEvents);
