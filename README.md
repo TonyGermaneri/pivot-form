@@ -45,31 +45,20 @@ Use tab widgets
     schema = [
         {
             type: 'tabs',
-            tabs: {
-                tab1: {
-                    {
-                        name: 'column1',
-                        type: 'date'
-                    }
-                }
-            }
-        }
-    ]
-
-Use another form
-
-
-    schema = [
-        {
-            type: 'pivot-form',
-            schema: [
+            tabs: [
                 {
-                    name: 'column1',
-                    type: 'date'
+                    name: 'tab1',
+                    schema: [
+                        {
+                            name: 'column1',
+                            type: 'date'
+                        }
+                    ]
                 }
             ]
         }
     ]
+
 
 Output data is flattened into a single data object (row) dependent
 on the UI objects defined in the schema.  Data input is assigned to UI
