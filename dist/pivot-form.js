@@ -211,13 +211,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             return 'p' + Math.floor((Math.random() * Math.pow(2, 30))).toString(36);
         }
         function getComponentsByPropertyValue(key, value) {
-            var found = [], c = self.components;
+            var found = [];
             self.childForms.forEach(function (form) {
-                c = c.concat(form.components);
+                found = found.concat(form.getComponentsByPropertyValue(key, value));
             });
-            c.forEach(function (component) {
+            self.components.forEach(function (component) {
                 if (component && component.isContainer) {
-                    found = found.concat(component.getComponentsByPropertyValue(key, value));
+                    // this list of components will be in the above child forms
+                    return;
                 }
                 if (value === component[key] || (component.header && value === component.header[key])) {
                     found.push(component);
