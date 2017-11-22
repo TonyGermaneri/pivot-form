@@ -62,7 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 static: true,
                 name: 'searchResults0',
                 type: 'canvas-datagrid',
-                value: refreshBoxOffice
+                value: refreshBoxOffice,
+                attributes: {
+                    selectionMode: 'row'
+                }
             }
         ];
     }

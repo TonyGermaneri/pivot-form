@@ -117,9 +117,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 return defaultPrevented;
             };
         },
-        setProperties: function (root, props) {
+        setProperties: function setProperties(root, props) {
             if (typeof props !== 'object' || props === null || !root) { return; }
             Object.keys(props).forEach(function (keyName) {
+                // if trying to bind to an existing object, assign individual items to avoid
+                // illegality
+                if (typeof root[keyName] === 'object' && !Array.isArray(root[keyName])
+                        && root[keyName] !== null) {
+                    setProperties(root[keyName], props[keyName]);
+                    return;
+                }
                 root[keyName] = props[keyName];
             });
         },
@@ -934,9 +941,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         component.input = grid;
         header.static = header.static === undefined ? true : header.static;
         component.appendChild(grid);
-        Object.keys(header).forEach(function (propertyKey) {
-            grid[propertyKey] = header[propertyKey];
-        });
         util.setProperties(grid, header);
         util.setProperties(component.containerStyle, header.containerStyle);
         grid.name = pContext.name ? (pContext.name + '_canvas-datagrid_' + index) : undefined;
