@@ -121,6 +121,9 @@ For example, the select type has the additional property `enum` that represents 
         enum: [1, 2, 3]
     }
 
+You can pass `enum` a 2D array for value/innerHTML e.g.: `[[1, 'one', 2, 'two']]`
+or pass `enum` a function or async function that returns such an array.
+
 Some types are more complex because they can contain schemas.
 
     {
