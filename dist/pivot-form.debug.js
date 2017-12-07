@@ -879,6 +879,50 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         'url', 'week'].forEach(function (typeKey) {
         components[typeKey] = inputComponentFactory({className: 'input', type: typeKey});
     });
+    components.datalist = function (header, index, pivotForm) {
+        var componentContext = this,
+            id = util.createId(),
+            component = util.createElement('span', null, {className: 'component'}),
+            label = util.createElement('label', component, {className: 'label', for: id}),
+            input = util.createElement('input', component, {className: 'select', id: id, list: 'dl' + id}),
+            datalist = util.createElement('datalist', component, {className: 'datalist', id: 'dl' + id}),
+            fEnumVal,
+            options = [];
+        function fillOptions(arr) {
+            datalist.innerHTML = '';
+            arr.forEach(function (item) {
+                var option;
+                if (!Array.isArray(item)) { item = [item, item]; }
+                option = util.createElement('option', datalist, {value: item[0], innerHTML: item[1]});
+                util.setProperties(option, header.optionStyle);
+                options.push(option);
+            });
+        }
+        label.innerHTML = header.title === undefined ? header.name : header.title;
+        component.label = label;
+        component.input = input;
+        input.fillOptions = fillOptions;
+        component.containerStyle = {};
+        util.addEvents(input, header.events);
+        util.addEvents(label, header.labelEvents);
+        util.setProperties(input.style, header.style);
+        util.setProperties(label.style, header.labelStyle);
+        util.setProperties(component.containerStyle, header.containerStyle);
+        if (Array.isArray(header.enum)) {
+            fillOptions(header.enum);
+        } else if (typeof header.enum === 'function') {
+            fEnumVal = header.enum.apply(componentContext, [function (value) {
+                if (fEnumVal) { throw new Error('Async return detected from value already set via sync function.'); }
+                fillOptions(value);
+            }]);
+            if (fEnumVal) {
+                fillOptions(fEnumVal);
+            }
+        }
+        component.addEventListener = input.addEventListener;
+        component.removeEventListener = input.removeEventListener;
+        return component;
+    };
     components.select = function (header, index, pivotForm) {
         var componentContext = this,
             id = util.createId(),

@@ -336,6 +336,7 @@ Supported Types
 
 * HTMLElement (set property `tag` to control tag name)
 * select
+* datalist (autocomplete) - polyfill for safari: https://github.com/Fyrd/purejs-datalist-polyfill
 * h1
 * h2
 * h3

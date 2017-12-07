@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     'use strict';
     var form = document.createElement('pivot-form'),
         data = [{a: 'a', b: 'b', c: 'c'}];
+
     form.schema = [
         {
             type: 'tabs',
@@ -18,12 +19,45 @@ document.addEventListener('DOMContentLoaded', function () {
                                     schema: [
                                         {
                                             name: 'text1'
+                                        },
+                                        {
+                                            name: 'datalist1',
+                                            type: 'datalist',
+                                            enum: [
+                                                'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot',
+                                                'golf', 'hotel', 'india', 'juliet', 'kilo', 'lima',
+                                                'mike', 'november', 'oscar', 'papa', 'quebec', 'romeo',
+                                                'sierra', 'tango', 'uniform', 'victor', 'wiskey', 'xray',
+                                                'yankee', 'zulu'
+                                            ]
                                         }
                                     ]
                                 },
                                 {
                                     name: 'Tab B',
                                     schema: [
+                                        {
+                                            name: 'datalist2',
+                                            type: 'datalist',
+                                            enum: [
+                                                'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot',
+                                                'golf', 'hotel', 'india', 'juliet', 'kilo', 'lima',
+                                                'mike', 'november', 'oscar', 'papa', 'quebec', 'romeo',
+                                                'sierra', 'tango', 'uniform', 'victor', 'wiskey', 'xray',
+                                                'yankee', 'zulu'
+                                            ],
+                                            events: {
+                                                // in the event you want to have an autocomplete that changes content
+                                                // based on key input, the function `fillOptions` is attached to `this`
+                                                // in all events for the datalist type.
+                                                keyup: function () {
+                                                    var context = this;
+                                                    setTimeout(function () {
+                                                        context.fillOptions(['tango', 'uniform', 'victor', 'wiskey', 'xray', 'yankee', 'zulu']);
+                                                    });
+                                                }
+                                            }
+                                        },
                                         {
                                             name: 'grid0',
                                             type: 'canvas-datagrid'
