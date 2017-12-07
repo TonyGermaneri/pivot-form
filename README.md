@@ -364,7 +364,8 @@ Supported Types
 * radio
 * reset
 * submit
-* text',
+* text
+* textarea
 * color
 * date
 * datetime-local

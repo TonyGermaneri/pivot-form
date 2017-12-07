@@ -873,7 +873,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         };
     }
     // html 4 input types
-    ['checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'reset', 'submit', 'text',
+    ['checkbox', 'file', 'hidden', 'image', 'password', 'radio', 'reset', 'submit', 'text', 'textarea',
         // html 5 input types
         'color', 'date', 'datetime-local', 'email', 'month', 'number', 'range', 'search', 'tel', 'time',
         'url', 'week'].forEach(function (typeKey) {
