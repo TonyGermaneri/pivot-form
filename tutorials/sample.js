@@ -1,91 +1,211 @@
 /*jslint browser: true*/
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
-    var tabSchema, data, schema, form = window.pivotForm();
-    form.name = 'sample-root';
-    form.mode = 'dialog';
-    function weeksArray() {
-        return [['a', 'a'], ['b', 'b']];
-    }
-    function refreshBoxOffice(callback) {
-        console.log(form.data.week0);
-        var gridData = [{
-            week: form.data.week0
-        }];
-        setTimeout(function () {
-            callback(gridData);
-        }, 1000);
-    }
-    function boxOfficeSearchFormChange() {
-        refreshBoxOffice(function (data) {
-            form.data.searchResults0 = data;
-        });
-    }
-    function topBoxOffice(form) {
-        return [
-            {
-                static: true,
-                name: 'week0',
-                type: 'select',
-                enum: weeksArray,
-                value: function () {
-                    return weeksArray()[0][0];
+    var form = document.createElement('pivot-form'),
+        data = [{a: 'a', b: 'b', c: 'c'}];
+    form.schema = [
+        {
+            type: 'tabs',
+            tabs: [
+                {
+                    name: 'Tab 1',
+                    schema: [
+                        {
+                            type: 'tabs',
+                            tabs: [
+                                {
+                                    name: 'Tab A',
+                                    schema: [
+                                        {
+                                            name: 'text1'
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: 'Tab B',
+                                    schema: [
+                                        {
+                                            name: 'grid0',
+                                            type: 'canvas-datagrid'
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: 'Tab C',
+                                    schema: [
+                                        {
+                                            type: 'split-container',
+                                            panel1: {
+                                                schema: [
+                                                    {
+                                                        name: 'grid1',
+                                                        type: 'canvas-datagrid'
+                                                    }
+                                                ]
+                                            },
+                                            panel2: {
+                                                schema: [
+                                                    {
+                                                        name: 'grid2',
+                                                        type: 'canvas-datagrid'
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: 'Tab D',
+                                    schema: [
+                                        {
+                                            type: 'split-container',
+                                            panel1: {
+                                                mode: 'fieldset',
+                                                title: 'Example fields',
+                                                schema: [
+                                                    {
+                                                        name: 'text4'
+                                                    },
+                                                    {
+                                                        name: 'text5'
+                                                    },
+                                                    {
+                                                        name: 'text6'
+                                                    },
+                                                    {
+                                                        name: 'text7'
+                                                    }
+                                                ]
+                                            },
+                                            panel2: {
+                                                schema: [
+                                                    {
+                                                        name: 'grid3',
+                                                        type: 'canvas-datagrid'
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: 'Tab E',
+                                    schema: [
+                                        {
+                                            type: 'split-container',
+                                            panel1: {
+                                                mode: 'fieldset',
+                                                title: 'Example fields',
+                                                schema: [
+                                                    {
+                                                        name: 'text8'
+                                                    },
+                                                    {
+                                                        name: 'text9'
+                                                    },
+                                                    {
+                                                        name: 'text10'
+                                                    },
+                                                    {
+                                                        name: 'text11'
+                                                    }
+                                                ]
+                                            },
+                                            panel2: {
+                                                mode: 'fieldset',
+                                                title: 'Example fields',
+                                                schema: [
+                                                    {
+                                                        name: 'text12'
+                                                    },
+                                                    {
+                                                        name: 'text13'
+                                                    },
+                                                    {
+                                                        name: 'text14'
+                                                    },
+                                                    {
+                                                        name: 'text15'
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
-                events: {
-                    change: boxOfficeSearchFormChange
-                }
-            },
-            {
-                static: true,
-                name: 'week0',
-                title: 'blah',
-                type: 'select',
-                enum: weeksArray,
-                value: function () {
-                    return weeksArray()[0][0];
+                {
+                    name: 'Tab 2',
+                    schema: [
+                        {
+                            type: 'canvas-datagrid',
+                            name: 'grid5'
+                        }
+                    ]
                 },
-                events: {
-                    change: boxOfficeSearchFormChange
+                {
+                    name: 'Tab 3',
+                    schema: [
+                        {
+                            type: 'canvas-datagrid',
+                            name: 'grid6'
+                        }
+                    ]
+                },
+                {
+                    name: 'Tab 4',
+                    schema: [
+                        {
+                            type: 'split-container',
+                            panel1: {
+                                mode: 'fieldset',
+                                title: 'Example fields',
+                                schema: [
+                                    {
+                                        name: 'text8'
+                                    },
+                                    {
+                                        name: 'text9'
+                                    },
+                                    {
+                                        name: 'text10'
+                                    },
+                                    {
+                                        name: 'text11'
+                                    }
+                                ]
+                            },
+                            panel2: {
+                                mode: 'fieldset',
+                                title: 'Example fields',
+                                schema: [
+                                    {
+                                        name: 'text12'
+                                    },
+                                    {
+                                        name: 'text13'
+                                    },
+                                    {
+                                        name: 'text14'
+                                    },
+                                    {
+                                        name: 'text15'
+                                    }
+                                ]
+                            }
+                        }
+                    ]
                 }
-            },
-            {
-                static: true,
-                name: 'country0',
-                type: 'select',
-                enum: ['US', 'UK'],
-                value: 'US',
-                events: {
-                    change: boxOfficeSearchFormChange
-                }
-            },
-            {
-                static: true,
-                name: 'searchResults0',
-                type: 'canvas-datagrid',
-                value: refreshBoxOffice
-            }
-        ];
-    }
-    schema = [{
-        type: 'tabs',
-        static: true,
-        tabs: [
-            {
-                name: 'Top Box Office',
-                schema: topBoxOffice(form)
-            }
-        ]
-    }];
-    form.schema = schema;
-    data = {country0: 'UK'};
-    // form.data.country0 = 'UK';
-    form.data = data;
-    form.stylesheet = './sample.css';
-    form.addEventListener('initialized', function () {
-        document.getElementById('data-sample').style.backgroundColor = 'lightGreen';
-    });
-    form.addEventListener('change', function () {
-        document.getElementById('data-sample').value = JSON.stringify(form.data, null, '\t');
-    });
+            ]
+        }
+    ];
+    setTimeout(function () {
+        form.data.text1 = 'blah2';
+    }, 1000);
     document.body.appendChild(form);
+    form.addEventListener('change', function () {
+        console.log(form.data.text1);
+    });
 });
