@@ -201,9 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ]
         }
     ];
-    setTimeout(function () {
-        form.data.text1 = 'blah2';
-    }, 1000);
+    form.data.text1 = 'test';
     document.body.appendChild(form);
     form.addEventListener('change', function () {
         console.log(form.data.text1);
