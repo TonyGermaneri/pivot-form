@@ -350,7 +350,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 // notify that everything has been initialized on this form
                 intf.classList.remove('loading');
                 intf.dispatchEvent(new Event('initialized'));
-                console.log('initialized');
                 self.initialized = true;
             }
         }
@@ -923,8 +922,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     };
     components.HTMLElement = function (header, index, pivotForm) {
         var component = util.createElement(header.tagName, null, header);
-        util.addEvents(component, header.componentEvents);
-        util.setProperties(component.style, header.componentStyle);
         component.containerStyle = header.containerStyle;
         return component;
     };
