@@ -22,6 +22,8 @@ Applications include.
 
 Currently pivot-form is pre-alpha software.  Meaning we use it in production on a daily basis.
 
+To get a demo running, clone this repository, then drop `./tutorials/sample.html` into your browser.
+
 There is little or no documentation, more will come as the program matures.  Formal documentation will follow.
 
 Take row data
@@ -333,6 +335,55 @@ properties
 * name - used to store the order the user arranged the components set to `moveable: true`.
 * stylesheet - URL to a stylesheet that will be attached within the pivot-form's shadow dom allowing for overriding default styles without the use of CSS variables.
 
+Adding new components
+=====================
+
+There are two types of components.  Inputs and containers.  Containers have the property `isContainer` set to true.
+
+Each of the two types of components has a distinct contact to fill.
+
+For input type components
+-------------------------
+
+* Must be like an HTMLElement input and contain the following:
+    * Properties
+        * value
+    * Methods
+        * addEventListener
+        * removeEventListener
+    * Events
+        * change
+        * resize (optional)
+
+For container type components
+-----------------------------
+
+* Must be like an HTMLElement div and contain the following:
+    * properties
+        * value - returns or sets the data object
+        * getComponentByName(name) - gets the first component that has a name that matches the first argument.
+        * getComponentById(id) - gets the component with the id of the first argument.
+        * getComponentsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
+
+Defining the component function
+-------------------------------
+
+Your function must return an HTMLElement or custom HTMLElement.
+
+You must define your function by type using the PivotForm's ctor prototype property `components`, e.g.:
+
+    PivotForm.prototype.components.yourComponentNameGoesHere = function (header, index, pivotForm) {
+        // this is actually a valid component as it fills input component contract.
+        // Data will be get and set to it correctly.
+        return document.createElement('input');
+    };
+
+The arguments passed into the component factory function are as follows:
+
+    * this - the immediate pivot form this component belongs to.
+    * header - the actual header passed in from the schema.
+    * index - the index position of the header.
+    * pivotForm - the top most form this component belongs to.
 
 Supported Types
 ===============

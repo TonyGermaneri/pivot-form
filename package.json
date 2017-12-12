@@ -4,7 +4,7 @@
   "description": "Schema based hierarchical form component.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build-watch": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd --watch -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map'",
     "build-debug": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.debug.js --devtool source-map --output-source-map-filename='pivot-form.debug.map';npm run build-debug-css",
     "build": "./node_modules/.bin/webpack --output-library=pivot-form --output-library-target=umd -d --entry=./lib/index.js --output-path=./dist --output-filename=pivot-form.js --devtool source-map --output-source-map-filename='pivot-form.map';npm run build-css",
