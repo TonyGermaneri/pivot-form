@@ -15,7 +15,7 @@ This allows the creation of complex, granular, and language agnostic UI definiti
 Applications include.
 
 * Automated generation of forms directly from database schemas.
-* Granular access control to UI elements.
+* Simple way to provide granular access control to UI elements.
 * Simplifying the display of complex and hierarchical data without writing code.
 * Abstraction of complex asynchronous validation routines.  (e.g.: data validation is based on async select values)
 * Getting and setting row data via asynchronous functions.
@@ -312,9 +312,9 @@ When a schema is passed into the pivot-form, each header object creates a "compo
 field _maybe_ (if it has a name) linked to the data getter/setter.  You can get at these components at runtime
 by calling the following functions:
 
-* getComponentByName(name) - gets the first component that has a name that matches the first argument.
-* getComponentById(id) - gets the component with the id of the first argument.
-* getComponentsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
+* getElementByName(name) - gets the first component that has a name that matches the first argument.
+* getElementById(id) - gets the component with the id of the first argument.
+* getElementsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
 
 
 properties
@@ -361,9 +361,9 @@ For container type components
 * Must be like an HTMLElement div and contain the following:
     * properties
         * value - returns or sets the data object
-        * getComponentByName(name) - gets the first component that has a name that matches the first argument.
-        * getComponentById(id) - gets the component with the id of the first argument.
-        * getComponentsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
+        * getElementByName(name) - gets the first component that has a name that matches the first argument.
+        * getElementById(id) - gets the component with the id of the first argument.
+        * getElementsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
 
 Defining the component function
 -------------------------------
