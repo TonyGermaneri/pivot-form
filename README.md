@@ -15,12 +15,14 @@ This allows the creation of complex, granular, and language agnostic UI definiti
 Applications include.
 
 * Automated generation of forms directly from database schemas.
-* Granular access control to UI elements.
+* Simple way to provide granular access control to UI elements.
 * Simplifying the display of complex and hierarchical data without writing code.
 * Abstraction of complex asynchronous validation routines.  (e.g.: data validation is based on async select values)
 * Getting and setting row data via asynchronous functions.
 
 Currently pivot-form is pre-alpha software.  Meaning we use it in production on a daily basis.
+
+To get a demo running, clone this repository, then drop `./tutorials/sample.html` into your browser.
 
 There is little or no documentation, more will come as the program matures.  Formal documentation will follow.
 
@@ -120,6 +122,9 @@ For example, the select type has the additional property `enum` that represents 
         type: 'select',
         enum: [1, 2, 3]
     }
+
+You can pass `enum` a 2D array for value/innerHTML e.g.: `[[1, 'one', 2, 'two']]`
+or pass `enum` a function or async function that returns such an array.
 
 Some types are more complex because they can contain schemas.
 
@@ -307,9 +312,9 @@ When a schema is passed into the pivot-form, each header object creates a "compo
 field _maybe_ (if it has a name) linked to the data getter/setter.  You can get at these components at runtime
 by calling the following functions:
 
-* getComponentByName(name) - gets the first component that has a name that matches the first argument.
-* getComponentById(id) - gets the component with the id of the first argument.
-* getComponentsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
+* getElementByName(name) - gets the first component that has a name that matches the first argument.
+* getElementById(id) - gets the component with the id of the first argument.
+* getElementsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
 
 
 properties
@@ -330,6 +335,55 @@ properties
 * name - used to store the order the user arranged the components set to `moveable: true`.
 * stylesheet - URL to a stylesheet that will be attached within the pivot-form's shadow dom allowing for overriding default styles without the use of CSS variables.
 
+Adding new components
+=====================
+
+There are two types of components.  Inputs and containers.  Containers have the property `isContainer` set to true.
+
+Each of the two types of components has a distinct contact to fill.
+
+For input type components
+-------------------------
+
+* Must be like an HTMLElement input and contain the following:
+    * Properties
+        * value
+    * Methods
+        * addEventListener
+        * removeEventListener
+    * Events
+        * change
+        * resize (optional)
+
+For container type components
+-----------------------------
+
+* Must be like an HTMLElement div and contain the following:
+    * properties
+        * value - returns or sets the data object
+        * getElementByName(name) - gets the first component that has a name that matches the first argument.
+        * getElementById(id) - gets the component with the id of the first argument.
+        * getElementsByPropertyValue(key, value) - Returns an array of components that match the key and value passed into the argument list.
+
+Defining the component function
+-------------------------------
+
+Your function must return an HTMLElement or custom HTMLElement.
+
+You must define your function by type using the PivotForm's ctor prototype property `components`, e.g.:
+
+    PivotForm.prototype.components.yourComponentNameGoesHere = function (header, index, pivotForm) {
+        // this is actually a valid component as it fills input component contract.
+        // Data will be get and set to it correctly.
+        return document.createElement('input');
+    };
+
+The arguments passed into the component factory function are as follows:
+
+    * this - the immediate pivot form this component belongs to.
+    * header - the actual header passed in from the schema.
+    * index - the index position of the header.
+    * pivotForm - the top most form this component belongs to.
 
 Supported Types
 ===============

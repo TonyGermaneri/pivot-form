@@ -224,10 +224,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             self.idCounter += 1;
             return 'p' + Math.floor((Math.random() * Math.pow(2, 30))).toString(36);
         }
-        function getComponentsByPropertyValue(key, value) {
+        function getElementsByPropertyValue(key, value) {
             var found = [];
             intf.childForms.forEach(function (form) {
-                found = found.concat(form.getComponentsByPropertyValue(key, value));
+                found = found.concat(form.getElementsByPropertyValue(key, value));
             });
             self.components.forEach(function (component) {
                 if (component && component.isContainer) {
@@ -240,11 +240,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             });
             return found;
         }
-        function getComponentByName(value) {
-            return getComponentsByPropertyValue('name', value)[0];
+        function getElementByName(value) {
+            return getElementsByPropertyValue('name', value)[0];
         }
-        function getComponentById(value) {
-            return getComponentsByPropertyValue('id', value)[0];
+        function getElementById(value) {
+            return getElementsByPropertyValue('id', value)[0];
         }
         function setPreInitData() {
             if (!self.initialized) { return; }
@@ -466,7 +466,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                     cData[header.name] = component.input.value;
                     //intf.data = cData;
                     // update any other components of the same header.name with this value
-                    getComponentsByPropertyValue('name', header.name).forEach(function (comp) {
+                    getElementsByPropertyValue('name', header.name).forEach(function (comp) {
                         if (comp !== component) {
                             comp.value = cData;
                         }
@@ -605,6 +605,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             if (self.dialog) {
                 setTimeout(function () { self.dialog.centerHorizontally(); }, 1);
             }
+
         }
         function dataSetter(value) {
             if (!self.initialized) {
@@ -633,10 +634,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                         var cData = {};
                         cData[key] = value;
                         if (!self.initialized) {
-                            Object.assign(self.data, cData);
-                            self.components.forEach(function (component) {
-                                component.value = self.data;
-                            });
+                            // trust that on init it will then propagate to the child forms
+                            Object.assign(self.preInitData, cData);
+                            return;
                         }
                         intf.childForms.forEach(function (form) {
                             form.data = cData;
@@ -677,9 +677,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         // public interface definitions
         intf.init = init;
         intf.dispose = dispose;
-        intf.getComponentByName = getComponentByName;
-        intf.getComponentById = getComponentById;
-        intf.getComponentsByPropertyValue = getComponentsByPropertyValue;
+        intf.getElementByName = getElementByName;
+        intf.getElementById = getElementById;
+        intf.getElementsByPropertyValue = getElementsByPropertyValue;
         intf.addChildForm = addChildForm;
         Object.defineProperty(intf, 'childForms', {
             get: function () {
@@ -780,8 +780,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 }
             }
         });
-        // events
-        window.addEventListener('resize', dispatchResize);
         return intf;
     }
     function connectedCallback(el) {
@@ -808,9 +806,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     }
     function pivotFormFactory(args) {
         args = args || {};
-        requestAnimationFrame(function () {
-            window.dispatchEvent(new Event('resize'));
-        });
         if (window.customElements) {
             return new PivotForm(args);
         }
@@ -830,6 +825,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
     }
     PivotForm.prototype.components = defaultComponents;
     window.pivotForm = pivotFormFactory;
+    window.PivotForm = PivotForm;
     return pivotFormFactory;
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -1048,7 +1044,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         var pContext = this,
             component = util.createElement('div', null, {className: 'split-container-component'}),
             cutter = util.createElement('div', null, {className: 'split-container-cutter'}),
-            margin = 10,
             position,
             pct = 0.5,
             moveStart,
@@ -1123,14 +1118,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
             document.body.addEventListener('mousemove', moveCutter);
         };
         component.resize = function (pct) {
-            var s = component[offset[orientation]];
+            var ipct, s = component[offset[orientation]];
             if (pct || position === undefined) {
                 position = s * pct;
             }
-            component.panels[0].style[size[orientation]] = position - margin + 'px';
-            component.panels[1].style[size[orientation]] = margin + s - position - (margin * 0.5) + 'px';
-            component.panels[0].style[minSize[orientation]] = position - margin + 'px';
-            component.panels[1].style[minSize[orientation]] = margin + s - position - (margin * 0.5) + 'px';
+            pct = position / component[offset[orientation]];
+            ipct = (s - position) / component[offset[orientation]];
+            component.panels[0].style[size[orientation]] = (pct * 100) + '%';
+            component.panels[1].style[size[orientation]] = (ipct * 100) + '%';
+            component.panels[0].style[minSize[orientation]] = (pct * 100) + '%';
+            component.panels[1].style[minSize[orientation]] = (ipct * 100) + '%';
             [0, 1].forEach(function (n) {
                 var panel = component.panels[n];
                 if (panel.dispatchEvent) {
@@ -1163,7 +1160,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
         });
         position = component[offset[orientation]] * pct;
         component.orientation = orientation;
-        window.dispatchEvent(new Event('resize'));
         return component;
     };
     components.tabs = function (header, index, pivotForm) {
@@ -1192,7 +1188,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 tab.tabElement.classList.remove('tab-active');
                 tab.content.classList.remove('tab-content-active');
                 if (tab.content.parentNode) {
-                    tab.content.parentNode.removeChild(tab.content);
+                    component.removeChild(tab.content);
                     component.dispatchEvent(ev);
                 }
             });
@@ -1216,8 +1212,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*jslint browser
                 innerHTML: tabHeader.title || tabHeader.name
             });
             tab.content = components['pivot-form'].call(pContext, tabHeader, index, pivotForm);
-            pivotForm.addEventListener('resize', function () {
-                tab.content.dispatchEvent(new Event('resize'));
+            pContext.addEventListener('resize', function () {
+                if (activeTabIndex === index) {
+                    tab.content.dispatchEvent(new Event('resize'));
+                }
             });
             tab.content.classList.add('tab-content');
             util.setProperties(tab.content, tabHeader);

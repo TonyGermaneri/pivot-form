@@ -1,9 +1,7 @@
 /*jslint browser: true*/
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
-    var form = document.createElement('pivot-form'),
-        data = [{a: 'a', b: 'b', c: 'c'}];
-
+    var form = document.createElement('pivot-form');
     form.schema = [
         {
             type: 'tabs',
@@ -69,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     schema: [
                                         {
                                             type: 'split-container',
+                                            mode: 'fieldset',
                                             panel1: {
                                                 schema: [
                                                     {
@@ -98,7 +97,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 title: 'Example fields',
                                                 schema: [
                                                     {
-                                                        name: 'text4'
+                                                        name: 'text4',
+                                                        value: 'sample 4'
                                                     },
                                                     {
                                                         name: 'text5'
